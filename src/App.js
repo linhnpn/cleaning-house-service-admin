@@ -1,15 +1,35 @@
-import './App.css';
+import { Container, Row, Col } from "react-bootstrap";
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import Home from "./views/Home";
+import Login from "./views/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { UserAuthContextProvider } from "./context/UserAuthContext";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>404 NOT FOUND TEAM</h1>
-        <p>
-          Cleaning House Service - FE
-        </p>        
-      </header>
-    </div>
+    <>
+    <Container style={{ width: "400px" }}>
+      <Row>
+        <Col>
+          <UserAuthContextProvider>
+            <Routes>
+              <Route
+                path="/home"
+                element={
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/" element={<Login />} />
+            </Routes>
+          </UserAuthContextProvider>
+        </Col>
+      </Row>
+    </Container>
+    </>
+    
   );
 }
 
