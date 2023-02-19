@@ -24,14 +24,22 @@ import "assets/scss/now-ui-dashboard.scss?v1.5.0";
 import "assets/css/demo.css";
 
 import AdminLayout from "layouts/Admin.js";
+import LoginPage from "views/LoginPage.js";
+import App from './App.js';
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
+// ReactDOM.render(
+//   <App/>,  document.getElementById("root")
+// );
 
 root.render(
   <BrowserRouter>
     <Switch>
+    <Route path="/login" render={(props) => <LoginPage {...props} />} />
       <Route path="/admin" render={(props) => <AdminLayout {...props} />} />
-      <Redirect to="/admin/dashboard" />
+      <Redirect to="/login" />
     </Switch>
   </BrowserRouter>
 );

@@ -23,8 +23,18 @@ import TableList from "views/TableList.js";
 import Maps from "views/Maps.js";
 import Upgrade from "views/Upgrade.js";
 import UserPage from "views/UserPage.js";
+import LoginPage from "views/LoginPage.js";
 
 var dashRoutes = [
+  {
+    path: "/login",
+    name: "Login Page",
+    short: "Login",
+    mini: "LP",
+    component: LoginPage,
+    layout: "/",
+    invisible: true,
+  },
   {
     path: "/dashboard",
     name: "Dashboard",
