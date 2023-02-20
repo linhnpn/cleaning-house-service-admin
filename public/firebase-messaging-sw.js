@@ -13,7 +13,7 @@
   measurementId: "G-6PESFER3SW"
  };
 
-//  firebase.initializeApp(firebaseConfig);
+ firebase.initializeApp(firebaseConfig);
 
  // Retrieve firebase messaging
  const messaging = firebase.messaging();
