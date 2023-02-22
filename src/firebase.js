@@ -16,16 +16,16 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
 function requestPermission() {
-  console.log('Requesting permission...');
+//   console.log('Requesting permission...');
   Notification.requestPermission().then((permission) => {
       if (permission === 'granted') {
-          console.log('Notification permission granted.');
+        //   console.log('Notification permission granted.');
           const messaging = getMessaging(app);
           getToken(messaging, { vapidKey: 'BPBNRzwTLvHhX7ZxiXE8pZf2BTM4K-aFA_oxEnsEXURpoi3Z8YXv1TNaQ5iVp6evKHnBufGGdGwWbyW_BRgWs8o' })
               .then((currentToken) => {
                   if (currentToken) {
-                      console.log('currentToken: ', currentToken);
-                      console.log('firebase');
+                    //   console.log('currentToken: ', currentToken);
+                    //   console.log('firebase');
                   } else {
                       console.log('cant not get token');
                   }

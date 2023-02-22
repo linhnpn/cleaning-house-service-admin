@@ -16,8 +16,6 @@ import Iconify from '../components/iconify';
 // sections
 import { LoginForm } from '../sections/auth/login';
 
-import { auth } from "../firebase";
-
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -52,12 +50,15 @@ export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
   const navigate = useNavigate();
   const { googleSignIn } = useUserAuth();
-  console.log(auth);
 
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
     try {
-      await googleSignIn();
+      await googleSignIn().then((result) => {
+        const currentUser = result.user;
+        console.log({"Token: ": currentUser.stsTokenManager});
+        console.log({"accessToken ": currentUser.accessToken});
+      });
       navigate("/dashboard/app");
     } catch (error) {
       console.log(error.message);
