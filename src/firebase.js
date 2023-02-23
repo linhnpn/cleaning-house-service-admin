@@ -12,7 +12,6 @@ const firebaseConfig = {
     appId: "1:201459656752:web:653ea1497c5fd24d7fa5f5",
     measurementId: "G-6PESFER3SW"
 };
-
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
@@ -22,7 +21,7 @@ function requestPermission() {
       if (permission === 'granted') {
           console.log('Notification permission granted.');
           const messaging = getMessaging(app);
-          getToken(messaging, { vapidKey: 'BLMVZox38TsNKfO-1Y_fNRWZFMwVN9ut6BD1Qw0HJGL3b6JEmw3Mm7Z8s3iIhlMw7dUzwJjM8GH8AtJ3xgKXJTI' })
+          getToken(messaging, { vapidKey: 'BPBNRzwTLvHhX7ZxiXE8pZf2BTM4K-aFA_oxEnsEXURpoi3Z8YXv1TNaQ5iVp6evKHnBufGGdGwWbyW_BRgWs8o' })
               .then((currentToken) => {
                   if (currentToken) {
                       console.log('currentToken: ', currentToken);
