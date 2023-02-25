@@ -1,44 +1,44 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 // @mui
-import { alpha } from '@mui/material/styles';
-import { Box, MenuItem, Stack, IconButton, Popover } from '@mui/material';
+// import { alpha } from '@mui/material/styles';
+// import { Box, MenuItem, Stack, IconButton, Popover } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-const LANGS = [
-  {
-    value: 'en',
-    label: 'English',
-    icon: '/assets/icons/ic_flag_en.svg',
-  },
-  {
-    value: 'de',
-    label: 'German',
-    icon: '/assets/icons/ic_flag_de.svg',
-  },
-  {
-    value: 'fr',
-    label: 'French',
-    icon: '/assets/icons/ic_flag_fr.svg',
-  },
-];
+// const LANGS = [
+//   {
+//     value: 'en',
+//     label: 'English',
+//     icon: '/assets/icons/ic_flag_en.svg',
+//   },
+//   {
+//     value: 'de',
+//     label: 'German',
+//     icon: '/assets/icons/ic_flag_de.svg',
+//   },
+//   {
+//     value: 'fr',
+//     label: 'French',
+//     icon: '/assets/icons/ic_flag_fr.svg',
+//   },
+// ];
 
 // ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
-  const [open, setOpen] = useState(null);
+  // const [open, setOpen] = useState(null);
 
-  const handleOpen = (event) => {
-    setOpen(event.currentTarget);
-  };
+  // const handleOpen = (event) => {
+  //   setOpen(event.currentTarget);
+  // };
 
-  const handleClose = () => {
-    setOpen(null);
-  };
+  // const handleClose = () => {
+  //   setOpen(null);
+  // };
 
   return (
     <>
-      <IconButton
+      {/* <IconButton
         onClick={handleOpen}
         sx={{
           padding: 0,
@@ -81,7 +81,7 @@ export default function LanguagePopover() {
             </MenuItem>
           ))}
         </Stack>
-      </Popover>
+      </Popover> */}
     </>
   );
 }
