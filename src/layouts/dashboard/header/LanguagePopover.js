@@ -1,87 +1,69 @@
-// import { useState } from 'react';
+import { useState } from 'react';
 // @mui
-// import { alpha } from '@mui/material/styles';
-// import { Box, MenuItem, Stack, IconButton, Popover } from '@mui/material';
-
-// ----------------------------------------------------------------------
-
-// const LANGS = [
-//   {
-//     value: 'en',
-//     label: 'English',
-//     icon: '/assets/icons/ic_flag_en.svg',
-//   },
-//   {
-//     value: 'de',
-//     label: 'German',
-//     icon: '/assets/icons/ic_flag_de.svg',
-//   },
-//   {
-//     value: 'fr',
-//     label: 'French',
-//     icon: '/assets/icons/ic_flag_fr.svg',
-//   },
-// ];
+import { MenuItem, Stack } from '@mui/material';
+// hooks
+import useLocales from '../../../hooks/useLocales';
+// components
+import Image from '../../../components/Image';
+import MenuPopover from '../../../components/MenuPopover';
+import { IconButtonAnimate } from '../../../components/animate';
 
 // ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
-  // const [open, setOpen] = useState(null);
+  const { allLang, currentLang, onChangeLang } = useLocales();
 
-  // const handleOpen = (event) => {
-  //   setOpen(event.currentTarget);
-  // };
+  const [open, setOpen] = useState(null);
 
-  // const handleClose = () => {
-  //   setOpen(null);
-  // };
+  const handleOpen = (event) => {
+    setOpen(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setOpen(null);
+  };
 
   return (
     <>
-      {/* <IconButton
+      <IconButtonAnimate
         onClick={handleOpen}
         sx={{
-          padding: 0,
-          width: 44,
-          height: 44,
-          ...(open && {
-            bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.focusOpacity),
-          }),
+          width: 40,
+          height: 40,
+          ...(open && { bgcolor: 'action.selected' }),
         }}
       >
-        <img src={LANGS[0].icon} alt={LANGS[0].label} />
-      </IconButton>
+        <Image disabledEffect src={currentLang.icon} alt={currentLang.label} />
+      </IconButtonAnimate>
 
-      <Popover
+      <MenuPopover
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            mt: 1.5,
-            ml: 0.75,
-            width: 180,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
+        sx={{
+          mt: 1.5,
+          ml: 0.75,
+          width: 180,
+          '& .MuiMenuItem-root': { px: 1, typography: 'body2', borderRadius: 0.75 },
         }}
       >
         <Stack spacing={0.75}>
-          {LANGS.map((option) => (
-            <MenuItem key={option.value} selected={option.value === LANGS[0].value} onClick={() => handleClose()}>
-              <Box component="img" alt={option.label} src={option.icon} sx={{ width: 28, mr: 2 }} />
+          {allLang.map((option) => (
+            <MenuItem
+              key={option.value}
+              selected={option.value === currentLang.value}
+              onClick={() => {
+                onChangeLang(option.value);
+                handleClose();
+              }}
+            >
+              <Image disabledEffect alt={option.label} src={option.icon} sx={{ width: 28, mr: 2 }} />
 
               {option.label}
             </MenuItem>
           ))}
         </Stack>
-      </Popover> */}
+      </MenuPopover>
     </>
   );
 }
