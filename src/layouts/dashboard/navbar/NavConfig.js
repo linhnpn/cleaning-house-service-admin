@@ -28,12 +28,12 @@ const navConfig = [
   // GENERAL
   // ----------------------------------------------------------------------
   {
-    subheader: 'general',
+    subheader: 'Tổng quan',
     items: [
       // { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
       // { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
-      { title: 'analytics', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
-      { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
+      { title: 'Thống kê', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
+      // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
       // { title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
     ],
   },
@@ -41,26 +41,26 @@ const navConfig = [
   // MANAGEMENT
   // ----------------------------------------------------------------------
   {
-    subheader: 'management',
+    subheader: 'Quản lí',
     items: [
       // USER
       {
-        title: 'user',
+        title: 'Người dùng',
         path: PATH_DASHBOARD.user.root,
         icon: ICONS.user,
         children: [
           // { title: 'profile', path: PATH_DASHBOARD.user.profile },
           // { title: 'cards', path: PATH_DASHBOARD.user.cards },
-          { title: 'list', path: PATH_DASHBOARD.user.list },
+          { title: 'Danh sách', path: PATH_DASHBOARD.user.list },
           // { title: 'create', path: PATH_DASHBOARD.user.new },
-          { title: 'edit', path: PATH_DASHBOARD.user.demoEdit },
+          { title: 'Chỉnh sửa', path: PATH_DASHBOARD.user.demoEdit },
           // { title: 'account', path: PATH_DASHBOARD.user.account },
         ],
       },
 
       // E-COMMERCE
       {
-        title: 'e-commerce',
+        title: 'Dịch vụ',
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.cart,
         children: [
@@ -75,28 +75,28 @@ const navConfig = [
 
       // INVOICE
       {
-        title: 'invoice',
+        title: 'Hóa đơn',
         path: PATH_DASHBOARD.invoice.root,
         icon: ICONS.invoice,
         children: [
-          { title: 'list', path: PATH_DASHBOARD.invoice.list },
-          { title: 'details', path: PATH_DASHBOARD.invoice.demoView },
-          { title: 'create', path: PATH_DASHBOARD.invoice.new },
-          { title: 'edit', path: PATH_DASHBOARD.invoice.demoEdit },
+          { title: 'Danh sách', path: PATH_DASHBOARD.invoice.list },
+          { title: 'Chi tiết', path: PATH_DASHBOARD.invoice.demoView },
+          // { title: 'create', path: PATH_DASHBOARD.invoice.new },
+          // { title: 'edit', path: PATH_DASHBOARD.invoice.demoEdit },
         ],
       },
 
-      // BLOG
-      {
-        title: 'blog',
-        path: PATH_DASHBOARD.blog.root,
-        icon: ICONS.blog,
-        children: [
-          { title: 'posts', path: PATH_DASHBOARD.blog.posts },
-          { title: 'post', path: PATH_DASHBOARD.blog.demoView },
-          // { title: 'create', path: PATH_DASHBOARD.blog.new },
-        ],
-      },
+      // // BLOG
+      // {
+      //   title: 'blog',
+      //   path: PATH_DASHBOARD.blog.root,
+      //   icon: ICONS.blog,
+      //   children: [
+      //     { title: 'posts', path: PATH_DASHBOARD.blog.posts },
+      //     { title: 'post', path: PATH_DASHBOARD.blog.demoView },
+      //     // { title: 'create', path: PATH_DASHBOARD.blog.new },
+      //   ],
+      // },
     ],
   },
 

@@ -41,20 +41,27 @@ import { UserTableToolbar, UserTableRow } from '../../sections/@dashboard/user/l
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['all', 'male', 'female'];
+const STATUS_OPTIONS = [
+  'all', 
+  'banned', 
+  'active',
+  ];
 
 const ROLE_OPTIONS = [
   'all',
-  'male',
-  'female'
+  'admin',
+  'renter',
+  'employee'
 ];
 
 const TABLE_HEAD = [
-  { id: 'fullname', label: 'Họ và tên', alignRight: false },
+  { id: 'name', label: 'Họ và tên', alignRight: false },
   { id: 'dateOfBirth', label: 'Ngày sinh', alignRight: false },
   { id: 'gender', label: 'Giới tính', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
   { id: 'phone', label: 'SĐT', alignRight: false },
+  { id: 'role', label: 'Vai trò', alignRight: false },
+  { id: 'banned', label: 'Tình trạng', alignRight: false },
   { id: '' },
 ];
 
@@ -87,9 +94,8 @@ export default function UserList() {
 
   const getUser = async () => {
     try {
-      const url = `${process.env.REACT_APP_API_URL}/account/getAllAccount`;
+      const url = `${process.env.REACT_APP_API_URL}/account/get-all`;
       const { data } = await axios.get(url, { withCredentials: true });
-      // const  parse=data.data.email;
           setTableData(data);
 
 
@@ -154,14 +160,14 @@ export default function UserList() {
     (!dataFiltered.length && !!filterStatus);
 
   return (
-    <Page title="User: List">
+    <Page title="Danh sách: Người dùng">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="User List"
+          heading="Danh Sách Người Dùng"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'User', href: PATH_DASHBOARD.user.root },
-            { name: 'List' },
+            { name: 'Thống kê', href: PATH_DASHBOARD.root },
+            { name: 'Người dùng', href: PATH_DASHBOARD.user.root },
+            { name: 'Danh sách' },
           ]}
         />
 
@@ -236,7 +242,7 @@ export default function UserList() {
                       selected={selected.includes(row.id)}
                       onSelectRow={() => onSelectRow(row.id)}
                       onDeleteRow={() => handleDeleteRow(row.id)}
-                      onEditRow={() => handleEditRow(row.fullname)}
+                      onEditRow={() => handleEditRow(row.name)}
                     />
                   ))}
 
@@ -285,15 +291,15 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => item.fullname.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
   }
 
   if (filterStatus !== 'all') {
-    tableData = tableData.filter((item) => item.gender === filterStatus);
+    tableData = tableData.filter((item) => item.banned === filterStatus);
   }
 
   if (filterRole !== 'all') {
-    tableData = tableData.filter((item) => item.gender === filterRole);
+    tableData = tableData.filter((item) => item.role === filterRole);
   }
 
   return tableData;

@@ -32,7 +32,7 @@ export default function EmptyContent({ title, description, img, ...other }) {
         disabledEffect
         visibleByDefault
         alt="empty content"
-        src={img || 'https://minimal-assets-api.vercel.app/assets/illustrations/illustration_empty_content.svg'}
+        src={img || 'https://firebasestorage.googleapis.com/v0/b/cleaninghouseservice-23aa3.appspot.com/o/empty-box.svg?alt=media'}
         sx={{ height: 240, mb: 3 }}
       />
 

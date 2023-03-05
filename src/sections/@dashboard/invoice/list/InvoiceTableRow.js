@@ -27,7 +27,7 @@ InvoiceTableRow.propTypes = {
 export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow, onEditRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { sent, invoiceNumber, createDate, dueDate, status, invoiceTo, totalPrice } = row;
+  const { id, userId, userName, empId, empName, status, workTime, timestamp, price, location, jobId, jobName, description } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -45,12 +45,12 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
 
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={invoiceTo.name} color={createAvatar(invoiceTo.name).color} sx={{ mr: 2 }}>
+      {/* <TableCell sx={{ display: 'flex', alignItems: 'center' }}> */}
+        {/* <Avatar alt={invoiceTo.name} color={createAvatar(invoiceTo.name).color} sx={{ mr: 2 }}>
           {createAvatar(invoiceTo.name).name}
-        </Avatar>
+        </Avatar> */}
 
-        <Stack>
+        {/* <Stack>
           <Typography variant="subtitle2" noWrap>
             {invoiceTo.name}
           </Typography>
@@ -58,26 +58,32 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
           <Link noWrap variant="body2" onClick={onViewRow} sx={{ color: 'text.disabled', cursor: 'pointer' }}>
             {invoiceNumber}
           </Link>
-        </Stack>
-      </TableCell>
+        </Stack> */}
+      {/* </TableCell> */}
+      <TableCell align="left">{id}</TableCell>
+      <TableCell align="left">{userName}</TableCell>
+      <TableCell align="left">{empName}</TableCell>
+      <TableCell align="left">{fDate(timestamp)}</TableCell>
+      <TableCell align="center">{workTime}</TableCell>
+      <TableCell align="center">{jobName}</TableCell>
+      <TableCell align="center">{price}</TableCell>
 
-      <TableCell align="left">{fDate(createDate)}</TableCell>
+      {/* <TableCell align="left">{fDate(dueDate)}</TableCell> */}
 
-      <TableCell align="left">{fDate(dueDate)}</TableCell>
+      {/* <TableCell align="center">{fCurrency(totalPrice)}</TableCell> */}
 
-      <TableCell align="center">{fCurrency(totalPrice)}</TableCell>
-
-      <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
+      {/* <TableCell align="center" sx={{ textTransform: 'capitalize' }}>
         {sent}
-      </TableCell>
+      </TableCell> */}
 
       <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
           color={
-            (status === 'paid' && 'success') ||
-            (status === 'unpaid' && 'warning') ||
-            (status === 'overdue' && 'error') ||
+            (status === 'done' && 'success') ||
+            (status === 'undone' && 'warning') ||
+            (status === 'waiting' && 'warning') ||
+            (status === 'cancel' && 'default') ||
             'default'
           }
           sx={{ textTransform: 'capitalize' }}
@@ -93,7 +99,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
           onClose={handleCloseMenu}
           actions={
             <>
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => {
                   onDeleteRow();
                   handleCloseMenu();
@@ -102,7 +108,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
               >
                 <Iconify icon={'eva:trash-2-outline'} />
                 Delete
-              </MenuItem>
+              </MenuItem> */}
 
               <MenuItem
                 onClick={() => {
@@ -114,7 +120,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
                 View
               </MenuItem>
 
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => {
                   onEditRow();
                   handleCloseMenu();
@@ -122,7 +128,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Edit
-              </MenuItem>
+              </MenuItem> */}
             </>
           }
         />

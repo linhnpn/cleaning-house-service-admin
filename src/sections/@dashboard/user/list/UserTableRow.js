@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 // @mui
-// import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mui/material';
 // components
-// import Label from '../../../../components/Label';
+import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
 import { TableMoreMenu } from '../../../../components/table';
 
@@ -19,10 +19,10 @@ UserTableRow.propTypes = {
 };
 
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
-  // const theme = useTheme();
+  const theme = useTheme();
   console.log(row);
 
-  const { id, fullname, dateOfBirth, gender, email, phone, profilePicture } = row;
+  const { id, role, name, dateOfBirth, gender, phone, email, srcPicture, banned } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -41,9 +41,9 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={id} src={profilePicture} sx={{ mr: 2 }} />
+        <Avatar alt={id} src={srcPicture} sx={{ mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
-          {fullname}
+          {name}
         </Typography>
       </TableCell>
 
@@ -58,20 +58,23 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
         {phone}
       </TableCell>
+      <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
+        {role}
+      </TableCell>
       {/* const { id, fullname, dateOfBirth, gender, email, phone, profilePicture } = row; */}
 
 
       
 
-      {/* <TableCell align="left">
+      <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(status === 'banned' && 'error') || 'success'}
+          color={(banned === 'true' && 'error') || 'success'}
           sx={{ textTransform: 'capitalize' }}
         >
-          {status}
+          {banned}
         </Label>
-      </TableCell> */}
+      </TableCell>
 
       <TableCell align="right">
         <TableMoreMenu
@@ -88,7 +91,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                 sx={{ color: 'error.main' }}
               >
                 <Iconify icon={'eva:trash-2-outline'} />
-                Delete
+                Khóa tài khoản
               </MenuItem>
               <MenuItem
                 onClick={() => {
@@ -97,7 +100,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                 }}
               >
                 <Iconify icon={'eva:edit-fill'} />
-                Edit
+                Chi tiết
               </MenuItem>
             </>
           }

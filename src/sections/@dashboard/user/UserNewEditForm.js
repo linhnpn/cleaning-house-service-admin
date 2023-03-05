@@ -185,7 +185,7 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
               />
             )}
 
-            <RHFSwitch
+            {/* <RHFSwitch
               name="isVerified"
               labelPlacement="start"
               label={
@@ -199,7 +199,7 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
                 </>
               }
               sx={{ mx: 0, width: 1, justifyContent: 'space-between' }}
-            />
+            /> */}
           </Card>
         </Grid>
 
@@ -213,7 +213,7 @@ export default function UserNewEditForm({ isEdit, currentUser }) {
                 gridTemplateColumns: { xs: 'repeat(1, 1fr)', sm: 'repeat(2, 1fr)' },
               }}
             >
-              <RHFTextField name="name" label="Full Name" />
+              <RHFTextField name="name" label="Họ và tên" />
               <RHFTextField name="email" label="Email Address" />
               <RHFTextField name="phoneNumber" label="Phone Number" />
 

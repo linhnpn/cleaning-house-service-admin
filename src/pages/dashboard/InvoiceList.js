@@ -1,5 +1,7 @@
 import sumBy from 'lodash/sumBy';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+// import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -23,6 +25,7 @@ import {
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
+import { fDate } from '../../utils/formatTime';
 // hooks
 import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
@@ -43,21 +46,18 @@ import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/
 // ----------------------------------------------------------------------
 
 const SERVICE_OPTIONS = [
-  'all',
-  'full stack development',
-  'backend development',
-  'ui design',
-  'ui/ux design',
-  'front end development',
+  'all'
 ];
 
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Client', align: 'left' },
-  { id: 'createDate', label: 'Create', align: 'left' },
-  { id: 'dueDate', label: 'Due', align: 'left' },
-  { id: 'price', label: 'Amount', align: 'center', width: 140 },
-  { id: 'sent', label: 'Sent', align: 'center', width: 140 },
-  { id: 'status', label: 'Status', align: 'left' },
+  { id: 'id', label: 'Booking ID', align: 'left' },
+  { id: 'userName', label: 'Người dùng', align: 'left' },
+  { id: 'empName', label: 'Nhân viên', align: 'left' },
+  { id: 'timestamp', label: 'Ngày làm', align: 'center', width: 140 },
+  { id: 'workTime', label: 'Số giờ làm', align: 'center', width: 140 },
+  { id: 'jobName', label: 'Công việc', align: 'left' },
+  { id: 'price', label: 'Tổng bill', align: 'left' },
+  { id: 'status', label: 'Tình trạng', align: 'left' },
   { id: '' },
 ];
 
@@ -65,6 +65,40 @@ const TABLE_HEAD = [
 
 export default function InvoiceList() {
   const theme = useTheme();
+
+  useEffect(() => {
+    getBooking();
+  }, []);
+
+  const getBooking = async () => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/booking/get-bookings`;
+      const { data } = await axios.post(url, { withCredentials: true });
+          setTableData(data);
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    getService();
+  }, []);
+
+  const getService = async () => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/job/get-jobs`;
+      const { data } = await axios.post(url, { withCredentials: true });
+      const LIST_SERVICE = data.map((item) => item.job_name);
+      LIST_SERVICE.unshift('all');
+      settableService(LIST_SERVICE);
+
+
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   const { themeStretch } = useSettings();
 
@@ -87,9 +121,12 @@ export default function InvoiceList() {
     onChangeDense,
     onChangePage,
     onChangeRowsPerPage,
-  } = useTable({ defaultOrderBy: 'createDate' });
+  } = useTable({ defaultOrderBy: 'id' });
 
-  const [tableData, setTableData] = useState(_invoices);
+  // const [tableData, setTableData] = useState(_invoices);
+  const [tableService, settableService] = useState([]);
+
+  const [tableData, setTableData] = useState([]);
 
   const [filterName, setFilterName] = useState('');
 
@@ -115,7 +152,6 @@ export default function InvoiceList() {
     setSelected([]);
     setTableData(deleteRow);
   };
-
   const handleDeleteRows = (selected) => {
     const deleteRows = tableData.filter((row) => !selected.includes(row.id));
     setSelected([]);
@@ -154,39 +190,39 @@ export default function InvoiceList() {
   const getTotalPriceByStatus = (status) =>
     sumBy(
       tableData.filter((item) => item.status === status),
-      'totalPrice'
+      'price'
     );
 
   const getPercentByStatus = (status) => (getLengthByStatus(status) / tableData.length) * 100;
 
   const TABS = [
     { value: 'all', label: 'All', color: 'info', count: tableData.length },
-    { value: 'paid', label: 'Paid', color: 'success', count: getLengthByStatus('paid') },
-    { value: 'unpaid', label: 'Unpaid', color: 'warning', count: getLengthByStatus('unpaid') },
-    { value: 'overdue', label: 'Overdue', color: 'error', count: getLengthByStatus('overdue') },
-    { value: 'draft', label: 'Draft', color: 'default', count: getLengthByStatus('draft') },
+    { value: 'done', label: 'Hoàn thành', color: 'success', count: getLengthByStatus('done') },
+    { value: 'undone', label: 'Chưa hoàn thành', color: 'warning', count: getLengthByStatus('undone') },
+    { value: 'unconfirm', label: 'Chưa xác nhận', color: 'error', count: getLengthByStatus('unconfirm') },
+    { value: 'cancel', label: 'Hủy', color: 'default', count: getLengthByStatus('cancel') },
   ];
 
   return (
-    <Page title="Invoice: List">
+    <Page title="Hóa đơn: Danh sách">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Invoice List"
+          heading="Danh sách hóa đơn"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
-            { name: 'Invoices', href: PATH_DASHBOARD.invoice.root },
-            { name: 'List' },
+            { name: 'Thống kê', href: PATH_DASHBOARD.root },
+            { name: 'Hóa đơn', href: PATH_DASHBOARD.invoice.root },
+            { name: 'Danh sách' },
           ]}
-          action={
-            <Button
-              variant="contained"
-              component={RouterLink}
-              to={PATH_DASHBOARD.invoice.new}
-              startIcon={<Iconify icon={'eva:plus-fill'} />}
-            >
-              New Invoice
-            </Button>
-          }
+          // action={
+          //   <Button
+          //     variant="contained"
+          //     component={RouterLink}
+          //     to={PATH_DASHBOARD.invoice.new}
+          //     startIcon={<Iconify icon={'eva:plus-fill'} />}
+          //   >
+          //     New Invoice
+          //   </Button>
+          // }
         />
 
         <Card sx={{ mb: 5 }}>
@@ -197,42 +233,42 @@ export default function InvoiceList() {
               sx={{ py: 2 }}
             >
               <InvoiceAnalytic
-                title="Total"
+                title="Tổng"
                 total={tableData.length}
                 percent={100}
-                price={sumBy(tableData, 'totalPrice')}
+                price={sumBy(tableData, 'price')}
                 icon="ic:round-receipt"
                 color={theme.palette.info.main}
               />
               <InvoiceAnalytic
-                title="Paid"
-                total={getLengthByStatus('paid')}
-                percent={getPercentByStatus('paid')}
-                price={getTotalPriceByStatus('paid')}
+                title="Hoàn thành"
+                total={getLengthByStatus('done')}
+                percent={getPercentByStatus('done')}
+                price={getTotalPriceByStatus('done')}
                 icon="eva:checkmark-circle-2-fill"
                 color={theme.palette.success.main}
               />
               <InvoiceAnalytic
-                title="Unpaid"
-                total={getLengthByStatus('unpaid')}
-                percent={getPercentByStatus('unpaid')}
-                price={getTotalPriceByStatus('unpaid')}
+                title="Chưa hoàn thành"
+                total={getLengthByStatus('undone')}
+                percent={getPercentByStatus('undone')}
+                price={getTotalPriceByStatus('undone')}
                 icon="eva:clock-fill"
                 color={theme.palette.warning.main}
               />
               <InvoiceAnalytic
-                title="Overdue"
-                total={getLengthByStatus('overdue')}
-                percent={getPercentByStatus('overdue')}
-                price={getTotalPriceByStatus('overdue')}
+                title="Chờ xác nhận"
+                total={getLengthByStatus('unconfirm')}
+                percent={getPercentByStatus('unconfirm')}
+                price={getTotalPriceByStatus('unconfirm')}
                 icon="eva:bell-fill"
                 color={theme.palette.error.main}
               />
               <InvoiceAnalytic
-                title="Draft"
-                total={getLengthByStatus('draft')}
-                percent={getPercentByStatus('draft')}
-                price={getTotalPriceByStatus('draft')}
+                title="Hủy"
+                total={getLengthByStatus('cancel')}
+                percent={getPercentByStatus('cancel')}
+                price={getTotalPriceByStatus('cancel')}
                 icon="eva:file-fill"
                 color={theme.palette.text.secondary}
               />
@@ -278,7 +314,7 @@ export default function InvoiceList() {
             onFilterEndDate={(newValue) => {
               setFilterEndDate(newValue);
             }}
-            optionsService={SERVICE_OPTIONS}
+            optionsService={tableService}
           />
 
           <Scrollbar>
@@ -296,7 +332,7 @@ export default function InvoiceList() {
                   }
                   actions={
                     <Stack spacing={1} direction="row">
-                      <Tooltip title="Sent">
+                      {/* <Tooltip title="Sent">
                         <IconButton color="primary">
                           <Iconify icon={'ic:round-send'} />
                         </IconButton>
@@ -312,7 +348,7 @@ export default function InvoiceList() {
                         <IconButton color="primary">
                           <Iconify icon={'eva:printer-fill'} />
                         </IconButton>
-                      </Tooltip>
+                      </Tooltip> */}
 
                       <Tooltip title="Delete">
                         <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>
@@ -408,8 +444,8 @@ function applySortFilter({
   if (filterName) {
     tableData = tableData.filter(
       (item) =>
-        item.invoiceNumber.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
-        item.invoiceTo.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
+        item.userName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1 ||
+        item.empName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1
     );
   }
 
@@ -418,13 +454,15 @@ function applySortFilter({
   }
 
   if (filterService !== 'all') {
-    tableData = tableData.filter((item) => item.items.some((c) => c.service === filterService));
+    tableData = tableData.filter((item) => item.jobName === filterService);
   }
 
   if (filterStartDate && filterEndDate) {
     tableData = tableData.filter(
-      (item) =>
-        item.createDate.getTime() >= filterStartDate.getTime() && item.createDate.getTime() <= filterEndDate.getTime()
+      (item) => {
+        const date = new Date(item.timestamp);
+        return date.getTime() >= filterStartDate.getTime() && date.getTime() <= filterEndDate.getTime()
+      }
     );
   }
 
