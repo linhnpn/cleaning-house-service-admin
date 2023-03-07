@@ -1,7 +1,6 @@
 import sumBy from 'lodash/sumBy';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-// import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { useTheme } from '@mui/material/styles';
@@ -25,7 +24,6 @@ import {
 } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
-import { fDate } from '../../utils/formatTime';
 // hooks
 import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
@@ -44,10 +42,6 @@ import InvoiceAnalytic from '../../sections/@dashboard/invoice/InvoiceAnalytic';
 import { InvoiceTableRow, InvoiceTableToolbar } from '../../sections/@dashboard/invoice/list';
 
 // ----------------------------------------------------------------------
-
-const SERVICE_OPTIONS = [
-  'all'
-];
 
 const TABLE_HEAD = [
   { id: 'id', label: 'Booking ID', align: 'left' },
@@ -213,16 +207,6 @@ export default function InvoiceList() {
             { name: 'Hóa đơn', href: PATH_DASHBOARD.invoice.root },
             { name: 'Danh sách' },
           ]}
-          // action={
-          //   <Button
-          //     variant="contained"
-          //     component={RouterLink}
-          //     to={PATH_DASHBOARD.invoice.new}
-          //     startIcon={<Iconify icon={'eva:plus-fill'} />}
-          //   >
-          //     New Invoice
-          //   </Button>
-          // }
         />
 
         <Card sx={{ mb: 5 }}>
@@ -332,23 +316,6 @@ export default function InvoiceList() {
                   }
                   actions={
                     <Stack spacing={1} direction="row">
-                      {/* <Tooltip title="Sent">
-                        <IconButton color="primary">
-                          <Iconify icon={'ic:round-send'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Download">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:download-outline'} />
-                        </IconButton>
-                      </Tooltip>
-
-                      <Tooltip title="Print">
-                        <IconButton color="primary">
-                          <Iconify icon={'eva:printer-fill'} />
-                        </IconButton>
-                      </Tooltip> */}
 
                       <Tooltip title="Delete">
                         <IconButton color="primary" onClick={() => handleDeleteRows(selected)}>

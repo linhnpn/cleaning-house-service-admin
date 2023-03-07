@@ -80,7 +80,7 @@ const navConfig = [
         icon: ICONS.invoice,
         children: [
           { title: 'Danh sách', path: PATH_DASHBOARD.invoice.list },
-          { title: 'Chi tiết', path: PATH_DASHBOARD.invoice.demoView },
+          // { title: 'Chi tiết', path: PATH_DASHBOARD.invoice.demoView },
           // { title: 'create', path: PATH_DASHBOARD.invoice.new },
           // { title: 'edit', path: PATH_DASHBOARD.invoice.demoEdit },
         ],

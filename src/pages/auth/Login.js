@@ -1,10 +1,13 @@
 import { capitalCase } from 'change-case';
-import { Link as RouterLink } from 'react-router-dom';
+
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Card, Stack, Link, Alert, Tooltip, Container, Typography } from '@mui/material';
-// routes
-import { PATH_AUTH } from '../../routes/paths';
+import { Box, Card, Stack, Link, Alert, Tooltip, Container, Typography, Button, Divider } from '@mui/material';
+
+import Iconify from '../../components/Iconify';
+import { auth } from '../../firebase';
 // hooks
 import useAuth from '../../hooks/useAuth';
 import useResponsive from '../../hooks/useResponsive';
@@ -58,41 +61,50 @@ const ContentStyle = styled('div')(({ theme }) => ({
   padding: theme.spacing(12, 0),
 }));
 
+function googleSignIn() {
+  const googleAuthProvider = new GoogleAuthProvider();
+  return signInWithPopup(auth, googleAuthProvider);
+}
+
 // ----------------------------------------------------------------------
 
 export default function Login() {
   const { method } = useAuth();
 
+  const { loginGoogle } = useAuth();
   const smUp = useResponsive('up', 'sm');
 
   const mdUp = useResponsive('up', 'md');
+
+  const handleGoogleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      await googleSignIn().then(async (result) => {
+        const currentUser = result.user;
+        console.log(currentUser.accessToken);
+        await loginGoogle(currentUser.accessToken);
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <Page title="Login">
       <RootStyle>
         <HeaderStyle>
           <Logo />
-          {smUp && (
-            <Typography variant="body2" sx={{ mt: { md: -2 } }}>
-              Don’t have an account? {''}
-              <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.register}>
-                Get started
-              </Link>
-            </Typography>
-          )}
         </HeaderStyle>
 
         {mdUp && (
           <SectionStyle>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
             <Image
               visibleByDefault
               disabledEffect
               alt="login"
-              src="/assets/illustrations/illustration_login.png"
+              src="https://firebasestorage.googleapis.com/v0/b/cleaninghouseservice-23aa3.appspot.com/o/iCleanPNG.png?alt=media&token=b27bf36d-c31b-44be-8c03-0aae936b2d0b"
             />
+            <Image visibleByDefault disabledEffect alt="login" src="/assets/illustrations/illustration_login.png" />
           </SectionStyle>
         )}
 
@@ -101,7 +113,7 @@ export default function Login() {
             <Stack direction="row" alignItems="center" sx={{ mb: 5 }}>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="h4" gutterBottom>
-                  Sign in to Minimal
+                  Sign in to iClatt
                 </Typography>
                 <Typography sx={{ color: 'text.secondary' }}>Enter your details below.</Typography>
               </Box>
@@ -110,27 +122,25 @@ export default function Login() {
                 <>
                   <Image
                     disabledEffect
-                    src={`https://minimal-assets-api.vercel.app/assets/icons/auth/ic_${method}.png`}
-                    sx={{ width: 32, height: 32 }}
+                    src={`https://firebasestorage.googleapis.com/v0/b/cleaninghouseservice-23aa3.appspot.com/o/logo.png?alt=media`}
+                    sx={{ width: 50, height: 50 }}
                   />
                 </>
               </Tooltip>
             </Stack>
 
-            <Alert severity="info" sx={{ mb: 3 }}>
-              Use email : <strong>demo@minimals.cc</strong> / password :<strong> demo1234</strong>
-            </Alert>
+            <Stack direction="row" spacing={2}>
+              <Button fullWidth size="large" color="inherit" variant="outlined" onClick={handleGoogleSignIn}>
+                <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
+              </Button>
+            </Stack>
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                OR
+              </Typography>
+            </Divider>
 
             <LoginForm />
-
-            {!smUp && (
-              <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-                Don’t have an account?{' '}
-                <Link variant="subtitle2" component={RouterLink} to={PATH_AUTH.register}>
-                  Get started
-                </Link>
-              </Typography>
-            )}
           </ContentStyle>
         </Container>
       </RootStyle>

@@ -1,8 +1,6 @@
 import { paramCase } from 'change-case';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-// import { useState } from 'react';
-// import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import {
@@ -29,7 +27,6 @@ import useTabs from '../../hooks/useTabs';
 import useSettings from '../../hooks/useSettings';
 import useTable, { getComparator, emptyRows } from '../../hooks/useTable';
 // _mock_
-// import { _userList } from '../../_mock';
 // components
 import Page from '../../components/Page';
 import Iconify from '../../components/Iconify';
@@ -41,18 +38,9 @@ import { UserTableToolbar, UserTableRow } from '../../sections/@dashboard/user/l
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [
-  'all', 
-  'banned', 
-  'active',
-  ];
+const STATUS_OPTIONS = ['all', 'banned', 'active'];
 
-const ROLE_OPTIONS = [
-  'all',
-  'admin',
-  'renter',
-  'employee'
-];
+const ROLE_OPTIONS = ['all', 'admin', 'renter', 'employee'];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Họ và tên', alignRight: false },
@@ -87,7 +75,6 @@ export default function UserList() {
     onChangeRowsPerPage,
   } = useTable();
 
-  
   useEffect(() => {
     getUser();
   }, []);
@@ -96,20 +83,15 @@ export default function UserList() {
     try {
       const url = `${process.env.REACT_APP_API_URL}/account/get-all`;
       const { data } = await axios.get(url, { withCredentials: true });
-          setTableData(data);
-
-
+      setTableData(data);
     } catch (err) {
       console.log(err);
     }
-  }
-
+  };
 
   const { themeStretch } = useSettings();
 
   const navigate = useNavigate();
-
-  // const [tableData, setTableData] = useState(_userList);
 
   const [tableData, setTableData] = useState([]);
 
@@ -128,10 +110,14 @@ export default function UserList() {
     setFilterRole(event.target.value);
   };
 
-  const handleDeleteRow = (id) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
+  const handleDeleteRow = async (id) => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/account/ban/${id}`;
+      await axios.post(url, { withCredentials: true });
+      getUser();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const handleDeleteRows = (selected) => {
@@ -295,7 +281,12 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   }
 
   if (filterStatus !== 'all') {
-    tableData = tableData.filter((item) => item.banned === filterStatus);
+    if (filterStatus === 'banned') {
+      tableData = tableData.filter((item) => item.banned === true);
+    }
+    if (filterStatus === 'active') {
+      tableData = tableData.filter((item) => item.banned === false);
+    }
   }
 
   if (filterRole !== 'all') {
