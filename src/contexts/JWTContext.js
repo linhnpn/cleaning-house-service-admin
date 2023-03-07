@@ -1,7 +1,6 @@
 import { createContext, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-// utils
-import axios from '../utils/axios';
+import axios from 'axios';
 import { isValidToken, setSession } from '../utils/jwt';
 
 // ----------------------------------------------------------------------
@@ -36,15 +35,6 @@ const handlers = {
     isAuthenticated: false,
     user: null,
   }),
-  REGISTER: (state, action) => {
-    const { user } = action.payload;
-
-    return {
-      ...state,
-      isAuthenticated: true,
-      user,
-    };
-  },
 };
 
 const reducer = (state, action) => (handlers[action.type] ? handlers[action.type](state, action) : state);
@@ -54,7 +44,7 @@ const AuthContext = createContext({
   method: 'jwt',
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  register: () => Promise.resolve(),
+  loginGoogle: () => Promise.resolve(),
 });
 
 // ----------------------------------------------------------------------
@@ -70,11 +60,15 @@ function AuthProvider({ children }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
+        console.log(accessToken);
 
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
 
-          const response = await axios.get('/api/account/my-account');
+          const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, {
+            username: 'admin',
+            password: 'admin',
+          });
           const { user } = response.data;
 
           dispatch({
@@ -108,13 +102,13 @@ function AuthProvider({ children }) {
     initialize();
   }, []);
 
-  const login = async (email, password) => {
-    const response = await axios.post('/api/account/login', {
-      email,
+  const login = async (username, password) => {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/login`, {
+      username,
       password,
     });
-    const { accessToken, user } = response.data;
 
+    const { accessToken, user } = response.data.data;
     setSession(accessToken);
     dispatch({
       type: 'LOGIN',
@@ -124,18 +118,13 @@ function AuthProvider({ children }) {
     });
   };
 
-  const register = async (email, password, firstName, lastName) => {
-    const response = await axios.post('/api/account/register', {
-      email,
-      password,
-      firstName,
-      lastName,
-    });
-    const { accessToken, user } = response.data;
+  const loginGoogle = async (idToken) => {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/login/withIdToken?id_token=${idToken}`, {});
 
-    window.localStorage.setItem('accessToken', accessToken);
+    const { accessToken, user } = response.data.data;
+    setSession(accessToken);
     dispatch({
-      type: 'REGISTER',
+      type: 'LOGIN',
       payload: {
         user,
       },
@@ -154,7 +143,7 @@ function AuthProvider({ children }) {
         method: 'jwt',
         login,
         logout,
-        register,
+        loginGoogle,
       }}
     >
       {children}

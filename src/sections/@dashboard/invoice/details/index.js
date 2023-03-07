@@ -21,8 +21,6 @@ import { fCurrency } from '../../../../utils/formatNumber';
 import Label from '../../../../components/Label';
 import Image from '../../../../components/Image';
 import Scrollbar from '../../../../components/Scrollbar';
-//
-import InvoiceToolbar from './InvoiceToolbar';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +34,7 @@ const RowResultStyle = styled(TableRow)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 InvoiceDetails.propTypes = {
-  invoice: PropTypes.object.isRequired,
+  invoice: PropTypes.any.isRequired,
 };
 
 export default function InvoiceDetails({ invoice }) {
@@ -47,22 +45,24 @@ export default function InvoiceDetails({ invoice }) {
   }
 
   const {
-    items,
-    taxes,
+    id,
+    userId,
+    userName,
+    empId,
+    empName,
     status,
-    dueDate,
-    discount,
-    invoiceTo,
-    createDate,
-    totalPrice,
-    invoiceFrom,
-    invoiceNumber,
-    subTotalPrice,
+    workTime,
+    timestamp,
+    price,
+    location,
+    description,
+    jobName,
   } = invoice;
+  const date = new Date(timestamp);
+  const i = 1;
 
   return (
     <>
-      <InvoiceToolbar invoice={invoice} />
 
       <Card sx={{ pt: 5, px: 5 }}>
         <Grid container>
@@ -75,9 +75,10 @@ export default function InvoiceDetails({ invoice }) {
               <Label
                 variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
                 color={
-                  (status === 'paid' && 'success') ||
-                  (status === 'unpaid' && 'warning') ||
-                  (status === 'overdue' && 'error') ||
+                  (status === 'done' && 'success') ||
+                  (status === 'undone' && 'warning') ||
+                  (status === 'unconfirm' && 'warning') ||
+                  (status === 'cancel' && 'error') ||
                   'default'
                 }
                 sx={{ textTransform: 'uppercase', mb: 1 }}
@@ -85,40 +86,38 @@ export default function InvoiceDetails({ invoice }) {
                 {status}
               </Label>
 
-              <Typography variant="h6">{invoiceNumber}</Typography>
+              <Typography variant="h6">Hóa đơn số: {id}</Typography>
             </Box>
           </Grid>
 
           <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
             <Typography paragraph variant="overline" sx={{ color: 'text.disabled' }}>
-              Invoice from
+              Bên được thuê
             </Typography>
-            <Typography variant="body2">{invoiceFrom.name}</Typography>
-            <Typography variant="body2">{invoiceFrom.address}</Typography>
-            <Typography variant="body2">Phone: {invoiceFrom.phone}</Typography>
+            <Typography variant="body2">Mã số tài khoản: {empId}</Typography>
+            <Typography variant="body2">Họ và tên: {empName}</Typography>
           </Grid>
 
           <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
             <Typography paragraph variant="overline" sx={{ color: 'text.disabled' }}>
-              Invoice to
+              Bên thuê
             </Typography>
-            <Typography variant="body2">{invoiceTo.name}</Typography>
-            <Typography variant="body2">{invoiceTo.address}</Typography>
-            <Typography variant="body2">Phone: {invoiceTo.phone}</Typography>
+            <Typography variant="body2">Mã số tài khoản: {userId}</Typography>
+            <Typography variant="body2">Họ và tên: {userName}</Typography>
           </Grid>
 
           <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
             <Typography paragraph variant="overline" sx={{ color: 'text.disabled' }}>
-              date create
+              ngày thực hiện
             </Typography>
-            <Typography variant="body2">{fDate(createDate)}</Typography>
+            <Typography variant="body2">{fDate(date)}</Typography>
           </Grid>
 
           <Grid item xs={12} sm={6} sx={{ mb: 5 }}>
             <Typography paragraph variant="overline" sx={{ color: 'text.disabled' }}>
-              Due date
+              địa điểm thực hiện
             </Typography>
-            <Typography variant="body2">{fDate(dueDate)}</Typography>
+            <Typography variant="body2">{location}</Typography>
           </Grid>
         </Grid>
 
@@ -134,34 +133,32 @@ export default function InvoiceDetails({ invoice }) {
                 <TableRow>
                   <TableCell width={40}>#</TableCell>
                   <TableCell align="left">Description</TableCell>
-                  <TableCell align="left">Qty</TableCell>
-                  <TableCell align="right">Unit price</TableCell>
-                  <TableCell align="right">Total</TableCell>
+                  <TableCell align="left">Số giờ làm</TableCell>
+                  <TableCell align="right">Giá</TableCell>
+                  <TableCell align="right">Tổng</TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {items.map((row, index) => (
                   <TableRow
-                    key={index}
+                    key={i}
                     sx={{
                       borderBottom: (theme) => `solid 1px ${theme.palette.divider}`,
                     }}
                   >
-                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{i}</TableCell>
                     <TableCell align="left">
                       <Box sx={{ maxWidth: 560 }}>
-                        <Typography variant="subtitle2">{row.title}</Typography>
+                        <Typography variant="subtitle2">{jobName}</Typography>
                         <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-                          {row.description}
+                          {description}
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell align="left">{row.quantity}</TableCell>
-                    <TableCell align="right">{fCurrency(row.price)}</TableCell>
-                    <TableCell align="right">{fCurrency(row.price * row.quantity)}</TableCell>
+                    <TableCell align="left">{workTime}</TableCell>
+                    <TableCell align="right">{fCurrency(price)}</TableCell>
+                    <TableCell align="right">{fCurrency(price * workTime)}</TableCell>
                   </TableRow>
-                ))}
 
                 <RowResultStyle>
                   <TableCell colSpan={3} />
@@ -171,17 +168,7 @@ export default function InvoiceDetails({ invoice }) {
                   </TableCell>
                   <TableCell align="right" width={120}>
                     <Box sx={{ mt: 2 }} />
-                    <Typography>{fCurrency(subTotalPrice)}</Typography>
-                  </TableCell>
-                </RowResultStyle>
-
-                <RowResultStyle>
-                  <TableCell colSpan={3} />
-                  <TableCell align="right">
-                    <Typography>Discount</Typography>
-                  </TableCell>
-                  <TableCell align="right" width={120}>
-                    <Typography sx={{ color: 'error.main' }}>{discount && fCurrency(-discount)}</Typography>
+                    <Typography>{fCurrency(price * workTime)}</Typography>
                   </TableCell>
                 </RowResultStyle>
 
@@ -191,7 +178,7 @@ export default function InvoiceDetails({ invoice }) {
                     <Typography>Taxes</Typography>
                   </TableCell>
                   <TableCell align="right" width={120}>
-                    <Typography>{taxes && fCurrency(taxes)}</Typography>
+                    <Typography>{6000 && fCurrency(6000)}</Typography>
                   </TableCell>
                 </RowResultStyle>
 
@@ -201,7 +188,7 @@ export default function InvoiceDetails({ invoice }) {
                     <Typography variant="h6">Total</Typography>
                   </TableCell>
                   <TableCell align="right" width={140}>
-                    <Typography variant="h6">{fCurrency(totalPrice)}</Typography>
+                    <Typography variant="h6">{fCurrency(price * workTime + 6000)}</Typography>
                   </TableCell>
                 </RowResultStyle>
               </TableBody>
@@ -210,19 +197,6 @@ export default function InvoiceDetails({ invoice }) {
         </Scrollbar>
 
         <Divider sx={{ mt: 5 }} />
-
-        <Grid container>
-          <Grid item xs={12} md={9} sx={{ py: 3 }}>
-            <Typography variant="subtitle2">NOTES</Typography>
-            <Typography variant="body2">
-              We appreciate your business. Should you need us to add VAT or extra notes let us know!
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={3} sx={{ py: 3, textAlign: 'right' }}>
-            <Typography variant="subtitle2">Have a Question?</Typography>
-            <Typography variant="body2">support@minimals.cc</Typography>
-          </Grid>
-        </Grid>
       </Card>
     </>
   );

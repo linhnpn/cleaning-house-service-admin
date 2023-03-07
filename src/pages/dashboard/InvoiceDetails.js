@@ -1,6 +1,10 @@
 import { useParams } from 'react-router-dom';
+
+import React, { useEffect, useState } from 'react';
+
+import axios from 'axios';
 // @mui
-import { Container } from '@mui/material';
+import { Container, CircularProgress } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // _mock_
@@ -17,8 +21,25 @@ import Invoice from '../../sections/@dashboard/invoice/details';
 
 export default function InvoiceDetails() {
   const { themeStretch } = useSettings();
-
   const { id } = useParams();
+  const [loading, setLoading] = useState(true); // Add loading state
+
+  const [tableData, setTableData] = useState({});
+
+  useEffect(() => {
+    getBooking();
+  }, []);
+
+  const getBooking = async () => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/booking/get-bookings?booking_id=${id}`;
+      const { data } = await axios.post(url, { withCredentials: true });
+      setTableData(data[0]);
+      setLoading(false); // Set loading to false after data is fetched
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const invoice = _invoices.find((invoice) => invoice.id === id);
 
@@ -26,18 +47,22 @@ export default function InvoiceDetails() {
     <Page title="Invoice: View">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Invoice Details"
+          heading="Chi tiết hóa đơn"
           links={[
-            { name: 'Dashboard', href: PATH_DASHBOARD.root },
+            { name: 'Thống kê', href: PATH_DASHBOARD.root },
             {
-              name: 'Invoices',
+              name: 'Chi tiết hóa đơn',
               href: PATH_DASHBOARD.invoice.root,
             },
-            { name: invoice?.invoiceNumber || '' },
+            { name: invoice?.id || '' },
           ]}
         />
 
-        <Invoice invoice={invoice} />
+        {loading ? (
+          <CircularProgress /> // Show loading indicator while waiting for data
+        ) : (
+          <Invoice invoice={tableData} /> // Render Invoice component after data is fetched
+        )}
       </Container>
     </Page>
   );

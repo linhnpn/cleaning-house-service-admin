@@ -49,7 +49,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
 
       <TableCell align="left">{dateOfBirth}</TableCell>
 
-      <TableCell align="left">{gender==='male'? 'Nam' : 'Nữ' }</TableCell>
+      <TableCell align="left">{gender === 'male' ? 'Nam' : 'Nữ'}</TableCell>
 
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
         {email}
@@ -61,18 +61,14 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell align="left" sx={{ textTransform: 'capitalize' }}>
         {role}
       </TableCell>
-      {/* const { id, fullname, dateOfBirth, gender, email, phone, profilePicture } = row; */}
-
-
-      
 
       <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(banned === 'true' && 'error') || 'success'}
+          color={(banned === true && 'error') || 'success'}
           sx={{ textTransform: 'capitalize' }}
         >
-          {banned}
+          <TableCell align="left">{banned === true ? 'Banned' : 'Active'}</TableCell>
         </Label>
       </TableCell>
 
