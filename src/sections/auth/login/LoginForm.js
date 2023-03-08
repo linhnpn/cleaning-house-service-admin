@@ -19,12 +19,11 @@ export default function LoginForm() {
   useEffect(() => {
     const username = localStorage.getItem('username');
     const password = localStorage.getItem('password');
-    console.log(username);
     if (username && password) {
       reset({ username, password, remember: true });
       setRememberMe(true);
     }
-  }, [reset]);
+  });
 
   const { login } = useAuth();
 
@@ -67,7 +66,7 @@ export default function LoginForm() {
       await login(data.username, data.password);
     } catch (error) {
       if (isMountedRef.current) {
-        setError('afterSubmit', { ...error, message: error.response.data.message });
+        setError('afterSubmit', { ...error, message: error.response.data.message?? 'Some error occur, please contact the adminstator' });
       }
     }
   };
@@ -96,14 +95,14 @@ export default function LoginForm() {
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <RHFCheckbox
+        {/* <RHFCheckbox
           name="remember"
           label="Remember me"
           onChange={(event) => {
             localStorage.setItem('rememberMe', event.target.checked);
             setRememberMe(event.target.checked);
           }}
-        />
+        /> */}
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={isSubmitting}>

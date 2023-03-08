@@ -1,8 +1,9 @@
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 // @mui
-import { Container } from '@mui/material';
+import { Container, CircularProgress } from '@mui/material';
 // redux
 import { useDispatch, useSelector } from '../../redux/store';
 import { getProducts } from '../../redux/slices/product';
@@ -22,30 +23,51 @@ export default function EcommerceProductCreate() {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
-  const { products } = useSelector((state) => state.product);
+  const [loading, setLoading] = useState(true);
   const isEdit = pathname.includes('edit');
-  const currentProduct = products.find((product) => paramCase(product.name) === name);
+  const [currentProduct, setCurrentProduct] = useState({});
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json',
+    },
+  };
   useEffect(() => {
-    dispatch(getProducts());
-  }, [dispatch]);
+    getJob();
+  }, []);
+  
+  const getJob = async () => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/job/get-job/${name}`;
+      const { data } = (await axios.post(url, { withCredentials: true }, config)).data;
+      setCurrentProduct(data);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
-    <Page title="Ecommerce: Create a new product">
+    <Page title="Ecommerce: Create a new Job">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading={!isEdit ? 'Create a new product' : 'Edit product'}
+          heading={!isEdit ? 'Create a new Job' : 'Edit Job'}
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
               name: 'E-Commerce',
               href: PATH_DASHBOARD.eCommerce.root,
             },
-            { name: !isEdit ? 'New product' : name },
+            { name: !isEdit ? 'New job' : name },
           ]}
         />
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <ProductNewEditForm isEdit={isEdit} currentProduct={currentProduct} />
+        )}
 
-        <ProductNewEditForm isEdit={isEdit} currentProduct={currentProduct} />
       </Container>
     </Page>
   );

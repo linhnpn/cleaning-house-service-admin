@@ -1,53 +1,24 @@
 import PropTypes from 'prop-types';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
+import axios from 'axios';
+import React, { useEffect, useCallback, useMemo } from 'react';
+import FormData from 'form-data';
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useEffect, useMemo } from 'react';
 // form
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { styled } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
-import { Card, Chip, Grid, Stack, TextField, Typography, Autocomplete, InputAdornment } from '@mui/material';
+import { Box, Card, Chip, Grid, Stack, TextField, Typography, Autocomplete, InputAdornment } from '@mui/material';
 // routes
 import { PATH_DASHBOARD } from '../../../routes/paths';
+import { fData } from '../../../utils/formatNumber';
 // components
-import {
-  FormProvider,
-  RHFSwitch,
-  RHFSelect,
-  RHFEditor,
-  RHFTextField,
-  RHFRadioGroup,
-  RHFUploadMultiFile,
-} from '../../../components/hook-form';
+import { FormProvider, RHFTextField, RHFUploadAvatar } from '../../../components/hook-form';
 
 // ----------------------------------------------------------------------
-
-const GENDER_OPTION = ['Men', 'Women', 'Kids'];
-
-const CATEGORY_OPTION = [
-  { group: 'Clothing', classify: ['Shirts', 'T-shirts', 'Jeans', 'Leather'] },
-  { group: 'Tailored', classify: ['Suits', 'Blazers', 'Trousers', 'Waistcoats'] },
-  { group: 'Accessories', classify: ['Shoes', 'Backpacks and bags', 'Bracelets', 'Face masks'] },
-];
-
-const TAGS_OPTION = [
-  'Toy Story 3',
-  'Logan',
-  'Full Metal Jacket',
-  'Dangal',
-  'The Sting',
-  '2001: A Space Odyssey',
-  "Singin' in the Rain",
-  'Toy Story',
-  'Bicycle Thieves',
-  'The Kid',
-  'Inglourious Basterds',
-  'Snatch',
-  '3 Idiots',
-];
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -68,28 +39,18 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const NewProductSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    description: Yup.string().required('Description is required'),
-    images: Yup.array().min(1, 'Images is required'),
+    jobName: Yup.string().required('Job Name is required'),
+    avatarUrl: Yup.mixed().test('required', 'Avatar is required', (value) => value !== ''),
     price: Yup.number().moreThan(0, 'Price should not be $0.00'),
   });
 
   const defaultValues = useMemo(
     () => ({
-      name: currentProduct?.name || '',
-      description: currentProduct?.description || '',
-      images: currentProduct?.images || [],
-      code: currentProduct?.code || '',
-      sku: currentProduct?.sku || '',
+      jobName: currentProduct?.jobName || '',
+      avatarUrl: currentProduct?.thumbnailImage || '',
+      measureUnit: currentProduct?.measureUnit || '',
       price: currentProduct?.price || 0,
-      priceSale: currentProduct?.priceSale || 0,
-      tags: currentProduct?.tags || [TAGS_OPTION[0]],
-      inStock: true,
-      taxes: true,
-      gender: currentProduct?.gender || GENDER_OPTION[2],
-      category: currentProduct?.category || CATEGORY_OPTION[0].classify[1],
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [currentProduct]
   );
 
@@ -101,7 +62,6 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
   const {
     reset,
     watch,
-    control,
     setValue,
     getValues,
     handleSubmit,
@@ -110,6 +70,14 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
 
   const values = watch();
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      'Content-Type': 'multipart/form-data',
+      accept: '*/*',
+    },
+  };
+
   useEffect(() => {
     if (isEdit && currentProduct) {
       reset(defaultValues);
@@ -117,12 +85,27 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
     if (!isEdit) {
       reset(defaultValues);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEdit, currentProduct]);
 
   const onSubmit = async () => {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const formData = new FormData();
+      formData.append('name', getValues('jobName'));
+      formData.append('measure_unit', getValues('measureUnit'));
+      formData.append('price', getValues('price'));
+      formData.append('file', getValues('avatarUrl'));
+      let url ='';
+      if(isEdit) {
+        url = `${process.env.REACT_APP_API_URL}/job/${currentProduct.id}`;
+        formData.append('job_id', currentProduct.id);
+        await axios.put(url, formData, config);
+      } else {
+        url = `${process.env.REACT_APP_API_URL}/job/create-job`;
+        await axios.post(url, formData, config);
+      }    
+      
+     
+
       reset();
       enqueueSnackbar(!isEdit ? 'Create success!' : 'Update success!');
       navigate(PATH_DASHBOARD.eCommerce.list);
@@ -133,26 +116,19 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
-      setValue(
-        'images',
-        acceptedFiles.map((file) =>
+      const file = acceptedFiles[0];
+
+      if (file) {
+        setValue(
+          'avatarUrl',
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
-        )
-      );
+        );
+      }
     },
     [setValue]
   );
-
-  const handleRemoveAll = () => {
-    setValue('images', []);
-  };
-
-  const handleRemove = (file) => {
-    const filteredItems = values.images?.filter((_file) => _file !== file);
-    setValue('images', filteredItems);
-  };
 
   return (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -160,24 +136,34 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
             <Stack spacing={3}>
-              <RHFTextField name="name" label="Product Name" />
-
-              <div>
-                <LabelStyle>Description</LabelStyle>
-                <RHFEditor simple name="description" />
-              </div>
+              <RHFTextField name="jobName" label="Job Name" />
 
               <div>
                 <LabelStyle>Images</LabelStyle>
-                <RHFUploadMultiFile
-                  name="images"
-                  showPreview
-                  accept="image/*"
-                  maxSize={3145728}
-                  onDrop={handleDrop}
-                  onRemove={handleRemove}
-                  onRemoveAll={handleRemoveAll}
-                />
+                <Box sx={{ mb: 5 }}>
+                  <RHFUploadAvatar
+                    name="avatarUrl"
+                    accept="image/*"
+                    maxSize={3145728}
+                    onDrop={handleDrop}
+                    defaultValue={values.avatarUrl}
+                    helperText={
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          mt: 2,
+                          mx: 'auto',
+                          display: 'block',
+                          textAlign: 'center',
+                          color: 'text.secondary',
+                        }}
+                      >
+                        Allowed *.jpeg, *.jpg, *.png, *.gif
+                        <br /> max size of {fData(3145728)}
+                      </Typography>
+                    }
+                  />
+                </Box>
               </div>
             </Stack>
           </Card>
@@ -186,54 +172,8 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
         <Grid item xs={12} md={4}>
           <Stack spacing={3}>
             <Card sx={{ p: 3 }}>
-              <RHFSwitch name="inStock" label="In stock" />
-
               <Stack spacing={3} mt={2}>
-                <RHFTextField name="code" label="Product Code" />
-                <RHFTextField name="sku" label="Product SKU" />
-
-                <div>
-                  <LabelStyle>Gender</LabelStyle>
-                  <RHFRadioGroup
-                    name="gender"
-                    options={GENDER_OPTION}
-                    sx={{
-                      '& .MuiFormControlLabel-root': { mr: 4 },
-                    }}
-                  />
-                </div>
-
-                <RHFSelect name="category" label="Category">
-                  {CATEGORY_OPTION.map((category) => (
-                    <optgroup key={category.group} label={category.group}>
-                      {category.classify.map((classify) => (
-                        <option key={classify} value={classify}>
-                          {classify}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </RHFSelect>
-
-                <Controller
-                  name="tags"
-                  control={control}
-                  render={({ field }) => (
-                    <Autocomplete
-                      {...field}
-                      multiple
-                      freeSolo
-                      onChange={(event, newValue) => field.onChange(newValue)}
-                      options={TAGS_OPTION.map((option) => option)}
-                      renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                          <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
-                        ))
-                      }
-                      renderInput={(params) => <TextField label="Tags" {...params} />}
-                    />
-                  )}
-                />
+                <RHFTextField name="measureUnit" label="Product measureUnit" />
               </Stack>
             </Card>
 
@@ -251,22 +191,7 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
                     type: 'number',
                   }}
                 />
-
-                <RHFTextField
-                  name="priceSale"
-                  label="Sale Price"
-                  placeholder="0.00"
-                  value={getValues('priceSale') === 0 ? '' : getValues('priceSale')}
-                  onChange={(event) => setValue('price', Number(event.target.value))}
-                  InputLabelProps={{ shrink: true }}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    type: 'number',
-                  }}
-                />
               </Stack>
-
-              <RHFSwitch name="taxes" label="Price includes taxes" />
             </Card>
 
             <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>

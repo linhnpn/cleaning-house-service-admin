@@ -27,7 +27,7 @@ ProductTableRow.propTypes = {
 export default function ProductTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { name, cover, createdAt, inventoryType, price } = row;
+  const { id, jobName, price, thumbnailImage, measureUnit } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -44,29 +44,22 @@ export default function ProductTableRow({ row, selected, onEditRow, onSelectRow,
       <TableCell padding="checkbox">
         <Checkbox checked={selected} onClick={onSelectRow} />
       </TableCell>
+      <TableCell>
+      <Typography align="center" variant="subtitle2" noWrap>
+          {id}
+        </Typography>
+      </TableCell>      
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Image disabledEffect alt={name} src={cover} sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
+        <Image disabledEffect alt={jobName} src={thumbnailImage} sx={{ borderRadius: 1.5, width: 48, height: 48, mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
-          {name}
+          {jobName}
         </Typography>
       </TableCell>
 
-      <TableCell>{fDate(createdAt)}</TableCell>
-
-      <TableCell align="center">
-        <Label
-          variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={
-            (inventoryType === 'out_of_stock' && 'error') || (inventoryType === 'low_stock' && 'warning') || 'success'
-          }
-          sx={{ textTransform: 'capitalize' }}
-        >
-          {inventoryType ? sentenceCase(inventoryType) : ''}
-        </Label>
-      </TableCell>
-
       <TableCell align="right">{fCurrency(price)}</TableCell>
+      
+      <TableCell align="right">{measureUnit}</TableCell>
 
       <TableCell align="right">
         <TableMoreMenu

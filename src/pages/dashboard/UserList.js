@@ -75,14 +75,21 @@ export default function UserList() {
     onChangeRowsPerPage,
   } = useTable();
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    }
+  }
+
   useEffect(() => {
     getUser();
   }, []);
 
   const getUser = async () => {
     try {
-      const url = `${process.env.REACT_APP_API_URL}/account/get-all`;
-      const { data } = await axios.get(url, { withCredentials: true });
+      const url = `${process.env.REACT_APP_API_URL}/account/getAllAccount`;
+      const { data } = (await axios.get(url, { withCredentials: true, headers: config.headers }));
       setTableData(data);
     } catch (err) {
       console.log(err);
@@ -112,8 +119,8 @@ export default function UserList() {
 
   const handleDeleteRow = async (id) => {
     try {
-      const url = `${process.env.REACT_APP_API_URL}/account/ban/${id}`;
-      await axios.post(url, { withCredentials: true });
+      const url = `${process.env.REACT_APP_API_URL}/account/banAccount?account_id=${id}`;
+      await axios.post(url, { withCredentials: true }, config);
       getUser();
     } catch (err) {
       console.log(err);
@@ -228,7 +235,7 @@ export default function UserList() {
                       selected={selected.includes(row.id)}
                       onSelectRow={() => onSelectRow(row.id)}
                       onDeleteRow={() => handleDeleteRow(row.id)}
-                      onEditRow={() => handleEditRow(row.name)}
+                      onEditRow={() => handleEditRow(row.fullname)}
                     />
                   ))}
 
@@ -277,7 +284,7 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter((item) => item.fullname.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
   }
 
   if (filterStatus !== 'all') {

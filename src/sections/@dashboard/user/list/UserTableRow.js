@@ -20,9 +20,8 @@ UserTableRow.propTypes = {
 
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
-  console.log(row);
 
-  const { id, role, name, dateOfBirth, gender, phone, email, srcPicture, banned } = row;
+  const { id, role, fullname, dateOfBirth, gender, phone, email, srcPicture, banned } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -43,7 +42,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
         <Avatar alt={id} src={srcPicture} sx={{ mr: 2 }} />
         <Typography variant="subtitle2" noWrap>
-          {name}
+          {fullname}
         </Typography>
       </TableCell>
 

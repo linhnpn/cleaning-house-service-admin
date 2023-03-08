@@ -60,7 +60,6 @@ function AuthProvider({ children }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-        console.log(accessToken);
 
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
@@ -119,7 +118,7 @@ function AuthProvider({ children }) {
   };
 
   const loginGoogle = async (idToken) => {
-    const response = await axios.post(`${process.env.REACT_APP_API_URL}/login/withIdToken?id_token=${idToken}`, {});
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/login/withIdToken?id_token="${idToken}"`, {});
 
     const { accessToken, user } = response.data.data;
     setSession(accessToken);

@@ -20,6 +20,12 @@ import Invoice from '../../sections/@dashboard/invoice/details';
 // ----------------------------------------------------------------------
 
 export default function InvoiceDetails() {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    }
+  }
   const { themeStretch } = useSettings();
   const { id } = useParams();
   const [loading, setLoading] = useState(true); // Add loading state
@@ -33,7 +39,7 @@ export default function InvoiceDetails() {
   const getBooking = async () => {
     try {
       const url = `${process.env.REACT_APP_API_URL}/booking/get-bookings?booking_id=${id}`;
-      const { data } = await axios.post(url, { withCredentials: true });
+      const { data } = (await axios.post(url, { withCredentials: true }, config)).data;
       setTableData(data[0]);
       setLoading(false); // Set loading to false after data is fetched
     } catch (err) {

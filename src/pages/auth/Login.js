@@ -81,7 +81,6 @@ export default function Login() {
     try {
       await googleSignIn().then(async (result) => {
         const currentUser = result.user;
-        console.log(currentUser.accessToken);
         await loginGoogle(currentUser.accessToken);
       });
     } catch (error) {

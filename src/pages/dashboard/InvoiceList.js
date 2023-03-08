@@ -60,6 +60,12 @@ const TABLE_HEAD = [
 export default function InvoiceList() {
   const theme = useTheme();
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    }
+  }
   useEffect(() => {
     getBooking();
   }, []);
@@ -67,7 +73,7 @@ export default function InvoiceList() {
   const getBooking = async () => {
     try {
       const url = `${process.env.REACT_APP_API_URL}/booking/get-bookings`;
-      const { data } = await axios.post(url, { withCredentials: true });
+      const { data } = (await axios.post(url, { withCredentials: true }, config)).data;
           setTableData(data);
 
 
@@ -83,7 +89,7 @@ export default function InvoiceList() {
   const getService = async () => {
     try {
       const url = `${process.env.REACT_APP_API_URL}/job/get-jobs`;
-      const { data } = await axios.post(url, { withCredentials: true });
+      const {data} = await (await axios.post(url, { withCredentials: true }, config)).data;
       const LIST_SERVICE = data.map((item) => item.job_name);
       LIST_SERVICE.unshift('all');
       settableService(LIST_SERVICE);
@@ -117,7 +123,6 @@ export default function InvoiceList() {
     onChangeRowsPerPage,
   } = useTable({ defaultOrderBy: 'id' });
 
-  // const [tableData, setTableData] = useState(_invoices);
   const [tableService, settableService] = useState([]);
 
   const [tableData, setTableData] = useState([]);

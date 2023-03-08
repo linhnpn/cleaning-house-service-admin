@@ -1,5 +1,7 @@
 import { paramCase } from 'change-case';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 // @mui
 import {
@@ -42,10 +44,10 @@ import { ProductTableRow, ProductTableToolbar } from '../../sections/@dashboard/
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: 'name', label: 'Product', align: 'left' },
-  { id: 'createdAt', label: 'Create at', align: 'left' },
-  { id: 'inventoryType', label: 'Status', align: 'center', width: 180 },
+  { id: 'id', label: 'Job ID', align: 'center', width: 100 },
+  { id: 'jobName', label: 'Job Name', align: 'left' },
   { id: 'price', label: 'Price', align: 'right' },
+  { id: 'measureUnit', label: 'Unit', align: 'right' },
   { id: '' },
 ];
 
@@ -73,6 +75,13 @@ export default function EcommerceProductList() {
     defaultOrderBy: 'createdAt',
   });
 
+  const config = {
+    headers: {
+      Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+      'Content-Type': 'application/json'
+    }
+  }
+
   const { themeStretch } = useSettings();
 
   const navigate = useNavigate();
@@ -90,10 +99,20 @@ export default function EcommerceProductList() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (products.length) {
-      setTableData(products);
+    getJob();
+  }, []);
+
+  const getJob = async () => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/job/get-jobs`;
+      const { data } = (await axios.post(url, { withCredentials: true }, config)).data;
+          setTableData(data);
+
+
+    } catch (err) {
+      console.log(err);
     }
-  }, [products]);
+  }
 
   const handleFilterName = (filterName) => {
     setFilterName(filterName);
@@ -113,7 +132,7 @@ export default function EcommerceProductList() {
   };
 
   const handleEditRow = (id) => {
-    navigate(PATH_DASHBOARD.eCommerce.edit(paramCase(id)));
+    navigate(PATH_DASHBOARD.eCommerce.edit(id));
   };
 
   const dataFiltered = applySortFilter({
@@ -204,7 +223,7 @@ export default function EcommerceProductList() {
                           selected={selected.includes(row.id)}
                           onSelectRow={() => onSelectRow(row.id)}
                           onDeleteRow={() => handleDeleteRow(row.id)}
-                          onEditRow={() => handleEditRow(row.name)}
+                          onEditRow={() => handleEditRow(row.id)}
                         />
                       ) : (
                         !isNotFound && <TableSkeleton key={index} sx={{ height: denseHeight }} />
