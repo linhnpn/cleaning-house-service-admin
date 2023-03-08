@@ -1,39 +1,44 @@
 import PropTypes from 'prop-types';
 // @mui
-import { alpha } from '@mui/material/styles';
-import { Box, Typography, Stack } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
+import { Box, Typography } from '@mui/material';
+
+// ----------------------------------------------------------------------
+
+const RootStyle = styled(Box)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+}));
+
+const IconStyle = styled('div')(({ theme }) => ({
+  marginLeft: -4,
+  borderRadius: '50%',
+  width: theme.spacing(2),
+  height: theme.spacing(2),
+  border: `solid 2px ${theme.palette.background.paper}`,
+  boxShadow: `inset -1px 1px 2px ${alpha(theme.palette.common.black, 0.24)}`,
+}));
 
 // ----------------------------------------------------------------------
 
 ColorPreview.propTypes = {
-  sx: PropTypes.object,
-  limit: PropTypes.number,
   colors: PropTypes.arrayOf(PropTypes.string),
+  limit: PropTypes.number,
+  sx: PropTypes.object,
 };
 
 export default function ColorPreview({ colors, limit = 3, sx }) {
   const showColor = colors.slice(0, limit);
-
   const moreColor = colors.length - limit;
 
   return (
-    <Stack component="span" direction="row" alignItems="center" justifyContent="flex-end" sx={sx}>
+    <RootStyle component="span" sx={sx}>
       {showColor.map((color, index) => (
-        <Box
-          key={color + index}
-          sx={{
-            ml: -0.75,
-            width: 16,
-            height: 16,
-            borderRadius: '50%',
-            border: (theme) => `solid 2px ${theme.palette.background.paper}`,
-            boxShadow: (theme) => `inset -1px 1px 2px ${alpha(theme.palette.common.black, 0.24)}`,
-            bgcolor: color,
-          }}
-        />
+        <IconStyle key={color + index} sx={{ bgcolor: color }} />
       ))}
 
       {colors.length > limit && <Typography variant="subtitle2">{`+${moreColor}`}</Typography>}
-    </Stack>
+    </RootStyle>
   );
 }

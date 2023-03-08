@@ -1,19 +1,20 @@
 import { useState } from 'react';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Input, Slide, Button, IconButton, InputAdornment, ClickAwayListener } from '@mui/material';
+import { Input, Slide, Button, InputAdornment, ClickAwayListener } from '@mui/material';
 // utils
-import { bgBlur } from '../../../utils/cssStyles';
-// component
-import Iconify from '../../../components/iconify';
+import cssStyles from '../../../utils/cssStyles';
+// components
+import Iconify from '../../../components/Iconify';
+import { IconButtonAnimate } from '../../../components/animate';
 
 // ----------------------------------------------------------------------
 
-const HEADER_MOBILE = 64;
-const HEADER_DESKTOP = 92;
+const APPBAR_MOBILE = 64;
+const APPBAR_DESKTOP = 92;
 
-const StyledSearchbar = styled('div')(({ theme }) => ({
-  ...bgBlur({ color: theme.palette.background.default }),
+const SearchbarStyle = styled('div')(({ theme }) => ({
+  ...cssStyles(theme).bgBlur(),
   top: 0,
   left: 0,
   zIndex: 99,
@@ -21,11 +22,11 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
   display: 'flex',
   position: 'absolute',
   alignItems: 'center',
-  height: HEADER_MOBILE,
+  height: APPBAR_MOBILE,
   padding: theme.spacing(0, 3),
   boxShadow: theme.customShadows.z8,
   [theme.breakpoints.up('md')]: {
-    height: HEADER_DESKTOP,
+    height: APPBAR_DESKTOP,
     padding: theme.spacing(0, 5),
   },
 }));
@@ -33,10 +34,10 @@ const StyledSearchbar = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function Searchbar() {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   const handleOpen = () => {
-    setOpen(!open);
+    setOpen((prev) => !prev);
   };
 
   const handleClose = () => {
@@ -46,14 +47,14 @@ export default function Searchbar() {
   return (
     <ClickAwayListener onClickAway={handleClose}>
       <div>
-        {!open && (
-          <IconButton onClick={handleOpen}>
-            <Iconify icon="eva:search-fill" />
-          </IconButton>
+        {!isOpen && (
+          <IconButtonAnimate onClick={handleOpen}>
+            <Iconify icon={'eva:search-fill'} width={20} height={20} />
+          </IconButtonAnimate>
         )}
 
-        <Slide direction="down" in={open} mountOnEnter unmountOnExit>
-          <StyledSearchbar>
+        <Slide direction="down" in={isOpen} mountOnEnter unmountOnExit>
+          <SearchbarStyle>
             <Input
               autoFocus
               fullWidth
@@ -61,7 +62,10 @@ export default function Searchbar() {
               placeholder="Search…"
               startAdornment={
                 <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled', width: 20, height: 20 }} />
+                  <Iconify
+                    icon={'eva:search-fill'}
+                    sx={{ color: 'text.disabled', width: 20, height: 20 }}
+                  />
                 </InputAdornment>
               }
               sx={{ mr: 1, fontWeight: 'fontWeightBold' }}
@@ -69,7 +73,7 @@ export default function Searchbar() {
             <Button variant="contained" onClick={handleClose}>
               Search
             </Button>
-          </StyledSearchbar>
+          </SearchbarStyle>
         </Slide>
       </div>
     </ClickAwayListener>

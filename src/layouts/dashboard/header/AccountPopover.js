@@ -1,30 +1,47 @@
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // @mui
 import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
-// mocks_
-import account from '../../../_mock/account';
+import { Box, Divider, Typography, Stack, MenuItem } from '@mui/material';
+// routes
+import { PATH_DASHBOARD, PATH_AUTH } from '../../../routes/paths';
+// hooks
+import useAuth from '../../../hooks/useAuth';
+import useIsMountedRef from '../../../hooks/useIsMountedRef';
+// components
+import MyAvatar from '../../../components/MyAvatar';
+import MenuPopover from '../../../components/MenuPopover';
+import { IconButtonAnimate } from '../../../components/animate';
 
 // ----------------------------------------------------------------------
 
 const MENU_OPTIONS = [
   {
     label: 'Home',
-    icon: 'eva:home-fill',
+    linkTo: '/',
   },
   {
     label: 'Profile',
-    icon: 'eva:person-fill',
+    linkTo: PATH_DASHBOARD.user.profile,
   },
   {
     label: 'Settings',
-    icon: 'eva:settings-2-fill',
+    linkTo: PATH_DASHBOARD.user.account,
   },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const navigate = useNavigate();
+
+  const { user, logout } = useAuth();
+
+  const isMountedRef = useIsMountedRef();
+
+  const { enqueueSnackbar } = useSnackbar();
+
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -35,9 +52,23 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate(PATH_AUTH.login, { replace: true });
+
+      if (isMountedRef.current) {
+        handleClose();
+      }
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar('Unable to logout!', { variant: 'error' });
+    }
+  };
+
   return (
     <>
-      <IconButton
+      <IconButtonAnimate
         onClick={handleOpen}
         sx={{
           p: 0,
@@ -54,34 +85,29 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
-      </IconButton>
+        <MyAvatar />
+      </IconButtonAnimate>
 
-      <Popover
+      <MenuPopover
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 0,
-            mt: 1.5,
-            ml: 0.75,
-            width: 180,
-            '& .MuiMenuItem-root': {
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
+        sx={{
+          p: 0,
+          mt: 1.5,
+          ml: 0.75,
+          '& .MuiMenuItem-root': {
+            typography: 'body2',
+            borderRadius: 0.75,
           },
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user?.displayName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user?.email}
           </Typography>
         </Box>
 
@@ -89,7 +115,7 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label} to={option.linkTo} component={RouterLink} onClick={handleClose}>
               {option.label}
             </MenuItem>
           ))}
@@ -97,10 +123,10 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
-      </Popover>
+      </MenuPopover>
     </>
   );
 }
