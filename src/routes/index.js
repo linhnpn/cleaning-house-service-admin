@@ -58,9 +58,6 @@ export default function Router() {
         { path: 'app', element: <GeneralApp /> },
         { path: 'ecommerce', element: <GeneralEcommerce /> },
         { path: 'analytics', element: <GeneralAnalytics /> },
-        { path: 'banking', element: <GeneralBanking /> },
-        { path: 'booking', element: <GeneralBooking /> },
-
         {
           path: 'e-commerce',
           children: [
@@ -70,7 +67,6 @@ export default function Router() {
             { path: 'list', element: <EcommerceProductList /> },
             { path: 'product/new', element: <EcommerceProductCreate /> },
             { path: 'product/:name/edit', element: <EcommerceProductCreate /> },
-            { path: 'checkout', element: <EcommerceCheckout /> },
           ],
         },
         {
@@ -181,7 +177,6 @@ const VerifyCode = Loadable(lazy(() => import('../pages/auth/VerifyCode')));
 const GeneralApp = Loadable(lazy(() => import('../pages/dashboard/GeneralApp')));
 const GeneralEcommerce = Loadable(lazy(() => import('../pages/dashboard/GeneralEcommerce')));
 const GeneralAnalytics = Loadable(lazy(() => import('../pages/dashboard/GeneralAnalytics')));
-const GeneralBanking = Loadable(lazy(() => import('../pages/dashboard/GeneralBanking')));
 const GeneralBooking = Loadable(lazy(() => import('../pages/dashboard/GeneralBooking')));
 
 // ECOMMERCE
@@ -189,7 +184,6 @@ const EcommerceShop = Loadable(lazy(() => import('../pages/dashboard/EcommerceSh
 const EcommerceProductDetails = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductDetails')));
 const EcommerceProductList = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductList')));
 const EcommerceProductCreate = Loadable(lazy(() => import('../pages/dashboard/EcommerceProductCreate')));
-const EcommerceCheckout = Loadable(lazy(() => import('../pages/dashboard/EcommerceCheckout')));
 
 // INVOICE
 const InvoiceList = Loadable(lazy(() => import('../pages/dashboard/InvoiceList')));
@@ -225,4 +219,4 @@ const Kanban = Loadable(lazy(() => import('../pages/dashboard/Kanban')));
 // const Pricing = Loadable(lazy(() => import('../pages/Pricing')));
 // const Payment = Loadable(lazy(() => import('../pages/Payment')));
 // const Page500 = Loadable(lazy(() => import('../pages/Page500')));
-const NotFound = Loadable(lazy(() => import('../pages/Page404')));
+// const NotFound = Loadable(lazy(() => import('../pages/Page404')));

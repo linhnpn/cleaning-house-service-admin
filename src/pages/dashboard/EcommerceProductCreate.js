@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { paramCase } from 'change-case';
 import { useParams, useLocation } from 'react-router-dom';
 // @mui
 import { Container, CircularProgress } from '@mui/material';
-// redux
-import { useDispatch, useSelector } from '../../redux/store';
-import { getProducts } from '../../redux/slices/product';
 // routes
 import { PATH_DASHBOARD } from '../../routes/paths';
 // hooks
@@ -20,7 +16,6 @@ import ProductNewEditForm from '../../sections/@dashboard/e-commerce/ProductNewE
 
 export default function EcommerceProductCreate() {
   const { themeStretch } = useSettings();
-  const dispatch = useDispatch();
   const { pathname } = useLocation();
   const { name } = useParams();
   const [loading, setLoading] = useState(true);
@@ -36,7 +31,7 @@ export default function EcommerceProductCreate() {
   useEffect(() => {
     getJob();
   }, []);
-  
+
   const getJob = async () => {
     try {
       const url = `${process.env.REACT_APP_API_URL}/job/get-job/${name}`;
@@ -47,6 +42,14 @@ export default function EcommerceProductCreate() {
       console.log(err);
     }
   };
+  let content;
+  if (!isEdit) {
+    content = <ProductNewEditForm isEdit={isEdit} currentProduct={currentProduct} />;
+  } else if (loading) {
+    content = <CircularProgress />;
+  } else {
+    content = <ProductNewEditForm isEdit={isEdit} currentProduct={currentProduct} />;
+  }
 
   return (
     <Page title="Ecommerce: Create a new Job">
@@ -62,12 +65,7 @@ export default function EcommerceProductCreate() {
             { name: !isEdit ? 'New job' : name },
           ]}
         />
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <ProductNewEditForm isEdit={isEdit} currentProduct={currentProduct} />
-        )}
-
+        {content}
       </Container>
     </Page>
   );
