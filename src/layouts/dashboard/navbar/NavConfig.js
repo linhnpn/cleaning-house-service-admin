@@ -28,7 +28,7 @@ const navConfig = [
   // GENERAL
   // ----------------------------------------------------------------------
   {
-    subheader: 'Tổng quan',
+    subheader: 'GENERAL',
     items: [
       // { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
       // { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
@@ -53,7 +53,7 @@ const navConfig = [
           // { title: 'cards', path: PATH_DASHBOARD.user.cards },
           { title: 'Danh sách', path: PATH_DASHBOARD.user.list },
           // { title: 'create', path: PATH_DASHBOARD.user.new },
-          { title: 'Chỉnh sửa', path: PATH_DASHBOARD.user.demoEdit },
+          // { title: 'Chỉnh sửa', path: PATH_DASHBOARD.user.demoEdit },
           // { title: 'account', path: PATH_DASHBOARD.user.account },
         ],
       },
@@ -64,11 +64,11 @@ const navConfig = [
         path: PATH_DASHBOARD.eCommerce.root,
         icon: ICONS.cart,
         children: [
-          { title: 'shop', path: PATH_DASHBOARD.eCommerce.shop },
-          { title: 'product', path: PATH_DASHBOARD.eCommerce.demoView },
+          // { title: 'shop', path: PATH_DASHBOARD.eCommerce.shop },
+          // { title: 'product', path: PATH_DASHBOARD.eCommerce.demoView },
           { title: 'list', path: PATH_DASHBOARD.eCommerce.list },
           { title: 'create', path: PATH_DASHBOARD.eCommerce.new },
-          { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
+          // { title: 'edit', path: PATH_DASHBOARD.eCommerce.demoEdit },
           // { title: 'checkout', path: PATH_DASHBOARD.eCommerce.checkout },
         ],
       },
