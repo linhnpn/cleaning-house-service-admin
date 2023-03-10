@@ -88,7 +88,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                 <Iconify icon={'eva:trash-2-outline'} />
                 Khóa tài khoản
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => {
                   onEditRow();
                   handleCloseMenu();
@@ -96,7 +96,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Chi tiết
-              </MenuItem>
+              </MenuItem> */}
             </>
           }
         />

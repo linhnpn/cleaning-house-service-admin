@@ -38,7 +38,7 @@ import { UserTableToolbar, UserTableRow } from '../../sections/@dashboard/user/l
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = ['all', 'banned', 'active'];
+const STATUS_OPTIONS = ['all', 'male', 'female'];
 
 const ROLE_OPTIONS = ['all', 'admin', 'renter', 'employee'];
 
@@ -120,7 +120,7 @@ export default function UserList() {
   const handleDeleteRow = async (id) => {
     try {
       const url = `${process.env.REACT_APP_API_URL}/account/banAccount?account_id=${id}`;
-      await axios.post(url, { withCredentials: true }, config);
+      await axios.put(url, { withCredentials: true }, config);
       getUser();
     } catch (err) {
       console.log(err);
@@ -288,11 +288,11 @@ function applySortFilter({ tableData, comparator, filterName, filterStatus, filt
   }
 
   if (filterStatus !== 'all') {
-    if (filterStatus === 'banned') {
-      tableData = tableData.filter((item) => item.banned === true);
+    if (filterStatus === 'male') {
+      tableData = tableData.filter((item) => item.gender === 'male');
     }
-    if (filterStatus === 'active') {
-      tableData = tableData.filter((item) => item.banned === false);
+    if (filterStatus === 'female') {
+      tableData = tableData.filter((item) => item.gender !== 'male');
     }
   }
 
