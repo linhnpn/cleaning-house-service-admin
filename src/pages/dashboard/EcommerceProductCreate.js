@@ -52,17 +52,17 @@ export default function EcommerceProductCreate() {
   }
 
   return (
-    <Page title="Ecommerce: Create a new Job">
+    <Page title="Service: Create a new Service">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading={!isEdit ? 'Create a new Job' : 'Edit Job'}
+          heading={!isEdit ? 'Create a new Service' : 'Edit Service'}
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'E-Commerce',
+              name: 'E-Service',
               href: PATH_DASHBOARD.eCommerce.root,
             },
-            { name: !isEdit ? 'New job' : name },
+            { name: !isEdit ? 'New Service' : name },
           ]}
         />
         {content}

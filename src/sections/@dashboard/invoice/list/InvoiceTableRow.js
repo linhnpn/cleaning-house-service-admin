@@ -70,7 +70,7 @@ export default function InvoiceTableRow({ row, selected, onSelectRow, onViewRow,
           color={
             (status === 'done' && 'success') ||
             (status === 'undone' && 'warning') ||
-            (status === 'waiting' && 'warning') ||
+            (status === 'unconfirm' && 'warning') ||
             (status === 'cancel' && 'default') ||
             'default'
           }

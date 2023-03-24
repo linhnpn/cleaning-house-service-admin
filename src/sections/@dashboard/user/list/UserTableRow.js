@@ -6,6 +6,8 @@ import { Avatar, Checkbox, TableRow, TableCell, Typography, MenuItem } from '@mu
 // components
 import Label from '../../../../components/Label';
 import Iconify from '../../../../components/Iconify';
+import { fDate } from '../../../../utils/formatTime';
+
 import { TableMoreMenu } from '../../../../components/table';
 
 // ----------------------------------------------------------------------
@@ -21,7 +23,7 @@ UserTableRow.propTypes = {
 export default function UserTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const theme = useTheme();
 
-  const { id, role, fullname, dateOfBirth, gender, phone, email, srcPicture, banned } = row;
+  const { id, role, fullname, dateOfBirth, gender, phone, email, srcPicture, locked } = row;
 
   const [openMenu, setOpenMenuActions] = useState(null);
 
@@ -46,7 +48,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
         </Typography>
       </TableCell>
 
-      <TableCell align="left">{dateOfBirth}</TableCell>
+      <TableCell align="left">{fDate(dateOfBirth)}</TableCell>
 
       <TableCell align="left">{gender === 'male' ? 'Nam' : 'Nữ'}</TableCell>
 
@@ -64,10 +66,10 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
       <TableCell align="left">
         <Label
           variant={theme.palette.mode === 'light' ? 'ghost' : 'filled'}
-          color={(banned === true && 'error') || 'success'}
+          color={(locked === true && 'error') || 'success'}
           sx={{ textTransform: 'capitalize' }}
         >
-          <TableCell align="left">{banned === true ? 'Banned' : 'Active'}</TableCell>
+          <TableCell align="left">{locked === true ? 'Banned' : 'Active'}</TableCell>
         </Label>
       </TableCell>
 
@@ -88,7 +90,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
                 <Iconify icon={'eva:trash-2-outline'} />
                 Khóa tài khoản
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 onClick={() => {
                   onEditRow();
                   handleCloseMenu();
@@ -96,7 +98,7 @@ export default function UserTableRow({ row, selected, onEditRow, onSelectRow, on
               >
                 <Iconify icon={'eva:edit-fill'} />
                 Chi tiết
-              </MenuItem>
+              </MenuItem> */}
             </>
           }
         />

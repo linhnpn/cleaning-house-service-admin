@@ -1,7 +1,7 @@
 import sumBy from 'lodash/sumBy';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import {
@@ -12,7 +12,6 @@ import {
   Table,
   Stack,
   Switch,
-  Button,
   Tooltip,
   Divider,
   TableBody,
@@ -90,7 +89,7 @@ export default function InvoiceList() {
     try {
       const url = `${process.env.REACT_APP_API_URL}/job/get-jobs`;
       const {data} = await (await axios.post(url, { withCredentials: true }, config)).data;
-      const LIST_SERVICE = data.map((item) => item.job_name);
+      const LIST_SERVICE = data.map((item) => item.jobName);
       LIST_SERVICE.unshift('all');
       settableService(LIST_SERVICE);
 

@@ -25,6 +25,7 @@ function requestPermission() {
               .then((currentToken) => {
                   if (currentToken) {
                       console.log('currentToken: ', currentToken);
+                      localStorage.setItem('FcmToken', currentToken);
                       console.log('firebase');
                   } else {
                       console.log('cant not get token');

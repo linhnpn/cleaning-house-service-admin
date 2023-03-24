@@ -30,11 +30,11 @@ const navConfig = [
   {
     subheader: 'GENERAL',
     items: [
-      // { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
-      // { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
-      { title: 'Thống kê', path: PATH_DASHBOARD.general.analytics, icon: ICONS.analytics },
-      // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
-      // { title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
+  //     // { title: 'app', path: PATH_DASHBOARD.general.app, icon: ICONS.dashboard },
+  //     // { title: 'e-commerce', path: PATH_DASHBOARD.general.ecommerce, icon: ICONS.ecommerce },
+      { title: 'Thống kê', path: PATH_DASHBOARD.general.app, icon: ICONS.analytics },
+  //     // { title: 'banking', path: PATH_DASHBOARD.general.banking, icon: ICONS.banking },
+  //     // { title: 'booking', path: PATH_DASHBOARD.general.booking, icon: ICONS.booking },
     ],
   },
 

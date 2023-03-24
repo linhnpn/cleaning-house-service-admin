@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from 'react';
+import { createContext, useEffect, useReducer, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import { isValidToken, setSession } from '../utils/jwt';
@@ -10,7 +10,6 @@ const initialState = {
   isInitialized: false,
   user: null,
 };
-
 const handlers = {
   INITIALIZE: (state, action) => {
     const { isAuthenticated, user } = action.payload;
@@ -56,11 +55,12 @@ AuthProvider.propTypes = {
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem('accessToken');
-
         if (accessToken && isValidToken(accessToken)) {
           setSession(accessToken);
 
@@ -107,27 +107,35 @@ function AuthProvider({ children }) {
       password,
     });
 
-    const { accessToken, user } = response.data.data;
-    setSession(accessToken);
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user,
-      },
-    });
+    const { accessToken, accountDTO } = response.data.data;
+    const user = accountDTO;
+    if (user.role === "admin") {
+      setIsAdmin(true);
+      setSession(accessToken);
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          user,
+        },
+      });
+    }
   };
 
   const loginGoogle = async (idToken) => {
     const response = await axios.post(`${process.env.REACT_APP_API_URL}/login/withIdToken?id_token="${idToken}"`, {});
 
-    const { accessToken, user } = response.data.data;
-    setSession(accessToken);
-    dispatch({
-      type: 'LOGIN',
-      payload: {
-        user,
-      },
-    });
+    const { accessToken, accountDTO } = response.data.data;
+    const user = accountDTO;
+    if (user.role === "admin") {
+      setIsAdmin(true);
+      setSession(accessToken);
+      dispatch({
+        type: 'LOGIN',
+        payload: {
+          user,
+        },
+      });
+    }
   };
 
   const logout = async () => {

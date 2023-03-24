@@ -136,7 +136,7 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
         <Grid item xs={12} md={8}>
           <Card sx={{ p: 3 }}>
             <Stack spacing={3}>
-              <RHFTextField name="jobName" label="Job Name" />
+              <RHFTextField name="jobName" label="Service Name" />
 
               <div>
                 <LabelStyle>Images</LabelStyle>
@@ -173,7 +173,7 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
           <Stack spacing={3}>
             <Card sx={{ p: 3 }}>
               <Stack spacing={3} mt={2}>
-                <RHFTextField name="measureUnit" label="Product measureUnit" />
+                <RHFTextField name="measureUnit" label="Service measure Unit" />
               </Stack>
             </Card>
 
@@ -195,7 +195,7 @@ export default function ProductNewEditForm({ isEdit, currentProduct }) {
             </Card>
 
             <LoadingButton type="submit" variant="contained" size="large" loading={isSubmitting}>
-              {!isEdit ? 'Create Product' : 'Save Changes'}
+              {!isEdit ? 'Create Service' : 'Save Changes'}
             </LoadingButton>
           </Stack>
         </Grid>

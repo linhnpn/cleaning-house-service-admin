@@ -119,10 +119,23 @@ export default function EcommerceProductList() {
     setPage(0);
   };
 
-  const handleDeleteRow = (id) => {
-    const deleteRow = tableData.filter((row) => row.id !== id);
-    setSelected([]);
-    setTableData(deleteRow);
+  const handleDeleteRow = async (id) => {
+    try {
+      const url = `${process.env.REACT_APP_API_URL}/job/${id}`;
+      await axios.delete(url, { 
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      getJob();
+    } catch (err) {
+      console.log(err);
+    }
+    // const deleteRow = tableData.filter((row) => row.id !== id);
+    // setSelected([]);
+    // setTableData(deleteRow);
   };
 
   const handleDeleteRows = (selected) => {
@@ -146,17 +159,17 @@ export default function EcommerceProductList() {
   const isNotFound = (!dataFiltered.length && !!filterName) || (!isLoading && !dataFiltered.length);
 
   return (
-    <Page title="Ecommerce: Product List">
+    <Page title="Service: Service List">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
-          heading="Product List"
+          heading="Service List"
           links={[
             { name: 'Dashboard', href: PATH_DASHBOARD.root },
             {
-              name: 'E-Commerce',
+              name: 'E-Service',
               href: PATH_DASHBOARD.eCommerce.root,
             },
-            { name: 'Product List' },
+            { name: 'Service List' },
           ]}
           action={
             <Button
@@ -165,7 +178,7 @@ export default function EcommerceProductList() {
               component={RouterLink}
               to={PATH_DASHBOARD.eCommerce.new}
             >
-              New Product
+              New Service
             </Button>
           }
         />
@@ -275,7 +288,7 @@ function applySortFilter({ tableData, comparator, filterName }) {
   tableData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    tableData = tableData.filter((item) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
+    tableData = tableData.filter((item) => item.jobName.toLowerCase().indexOf(filterName.toLowerCase()) !== -1);
   }
 
   return tableData;
