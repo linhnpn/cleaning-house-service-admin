@@ -4,12 +4,15 @@ import { useHistory } from "react-router-dom";
 import { Form, Alert } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import GoogleButton from "react-google-button";
+import { FacebookLoginButton } from "react-social-login-buttons";
 import { auth } from "../firebase";
 import "./LoginPage.css";
 import "./Common.css";
 import {
+  FacebookAuthProvider,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
 } from "firebase/auth";
 
 const LoginPage = () => {
@@ -22,6 +25,11 @@ const LoginPage = () => {
     return signInWithPopup(auth, googleAuthProvider);
   }
 
+  function facebookSignIn() {
+    const facebookAuthProvider = new FacebookAuthProvider();
+    return signInWithPopup(auth, facebookAuthProvider);
+  }
+
   const navigate = useHistory();
 
   const handleSubmit = async (e) => {
@@ -32,6 +40,16 @@ const LoginPage = () => {
     try {
       await googleSignIn();
       navigate.push("/admin");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleFacebookSignIn = async (e) => {
+    try {
+      await facebookSignIn();
+      navigate.push("/admin");
+      console.log("facebook");
     } catch (error) {
       console.log(error.message);
     }
@@ -72,6 +90,13 @@ const LoginPage = () => {
             className="g-btn"
             type="dark"
             onClick={handleGoogleSignIn}
+          />
+        </div>
+        <div>
+          <FacebookLoginButton
+            className="g-btn"
+            type="dark"
+            onClick={handleFacebookSignIn}
           />
         </div>
       </div>
