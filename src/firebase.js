@@ -4,14 +4,15 @@ import { getMessaging, getToken } from "firebase/messaging";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBI53_ZJhDHN9uPXEmpZrN4fITeD0NCvR8",
-    authDomain: "cleaninghouseservice-23aa3.firebaseapp.com",
-    projectId: "cleaninghouseservice-23aa3",
-    storageBucket: "cleaninghouseservice-23aa3.appspot.com",
-    messagingSenderId: "201459656752",
-    appId: "1:201459656752:web:653ea1497c5fd24d7fa5f5",
-    measurementId: "G-6PESFER3SW"
-};
+    apiKey: "AIzaSyDrnxpG6_nsssAq2NO5H19tccLInsHiEG4",
+    authDomain: "iclean-59a5b.firebaseapp.com",
+    projectId: "iclean-59a5b",
+    storageBucket: "iclean-59a5b.appspot.com",
+    messagingSenderId: "475804456084",
+    appId: "1:475804456084:web:07074e4182be1cb8b35081",
+    measurementId: "G-BB4KX8W7VN"
+  };
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
@@ -21,7 +22,7 @@ function requestPermission() {
       if (permission === 'granted') {
           console.log('Notification permission granted.');
           const messaging = getMessaging(app);
-          getToken(messaging, { vapidKey: 'BPBNRzwTLvHhX7ZxiXE8pZf2BTM4K-aFA_oxEnsEXURpoi3Z8YXv1TNaQ5iVp6evKHnBufGGdGwWbyW_BRgWs8o' })
+          getToken(messaging, { vapidKey: 'BKKMuxxdK363l0nWfji6v1gjfK6PF-oUKtNSDhsN0wBtiQRnY1729g6KuK0082pSmFGXjaMGu7VoRoxaSlwRlcg' })
               .then((currentToken) => {
                   if (currentToken) {
                       console.log('currentToken: ', currentToken);
